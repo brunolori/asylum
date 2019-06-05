@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="qkpa_home_form">
+
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<div class="card card-w-title">
+					<h1>Lista e të dërguarve ne QKPA</h1>
+				</div>
+			</div>
+			
+			<div class="ui-g-12">
+					<p:messages showDetail="true" closable="true">
+						<p:autoUpdate />
+					</p:messages>
+			</div>
+			
+			
+			<p:repeat var="t" value="#{qkpaCheckInBean.transfers}">
+			
+				<div class="ui-g-12">
+					<div class="card">
+						
+						<div class="ui-g">
+							<div class="ui-g-12 ui-md-2">
+								<p:graphicImage value="#{photoBean.bioImg}" width="95%">
+									<f:param name="event_id"
+													value="#{t.selection.event.id}" />
+								 </p:graphicImage>
+							</div>
+							<div class="ui-g-12 ui-md-8">
+							<div class="ui-g">
+							<div class="ui-g-12 ">
+					      		<h2>#{t.selection.person.name} #{t.selection.person.fatherName} #{t.selection.person.surname} (#{t.selection.person.codeNationality})</h2>
+							</div>
+							<div class="ui-g-12 ">
+								<p:panelGrid layout="grid" columns="3" styleClass="ui-panelgrid-blank" >
+								
+										<p:outputLabel value="Nisur nga: " styleClass="bold"/>
+										<p:inputText value="#{t.fromOrganization.tag}" readonly="true"/>
+										<h:panelGrid layout="grid" columns="2"
+													styleClass="ui-panelgrid-blank">
+													<p:graphicImage width="40px" library="images"
+														name="#{t.selection.asylantDetails.unaccompainedChild == 'Y'.charAt(0)?'red-flag.png':'grey-flag.png'}" />
+													<p:outputLabel styleClass="bold" value="Fëmijë i pashoqëruar" />
+										</h:panelGrid>
+										
+										<p:outputLabel value="Ora nisjes: " styleClass="bold"/>
+										<p:inputText value="#{formatBean.formatTimestamp(t.checkOutTime)}" readonly="true"/>	
+										<h:panelGrid layout="grid" columns="2"
+													styleClass="ui-panelgrid-blank">
+													<p:graphicImage width="40px" library="images"
+														name="#{dt.selection.asylantDetails.inNeed == 'Y'.charAt(0)?'red-flag.png':'grey-flag.png'}" />
+													<p:outputLabel styleClass="bold" value="Person në nevojë" />
+										</h:panelGrid>
+										
+										<p:outputLabel value="Regjistruesi: " styleClass="bold"/>																									
+										<p:inputText value="#{t.checkOutUser}" readonly="true"/>
+										<h:panelGrid layout="grid" columns="2"
+													styleClass="ui-panelgrid-blank">
+													<p:graphicImage width="40px" library="images"
+														name="#{t.selection.asylantDetails.returned == 'Y'.charAt(0)?'red-flag.png':'grey-flag.png'}" />
+													<p:outputLabel styleClass="bold" value="I rikthyer" />
+										</h:panelGrid>
+								
+								</p:panelGrid>
+								</div>
+							</div>
+							
+							
+							</div>
+							<div class="ui-g-12 ui-md-1">
+								<p:commandButton value="Prano" action="#{qkpaCheckInBean.checkIn(t)}" update="@form" styleClass="green-btn">
+									<p:confirm header="Prano në QKPA" message="Jeni të sigurt?"/>
+								</p:commandButton>
+							</div>
+							<div class="ui-g-12 ui-md-1">
+								<p:commandButton value="Refuzo" action="#{qkpaCheckInBean.reject(t)}" update="@form" styleClass="red-btn">
+									<p:confirm header="Refizo Azilantin" message="Jeni të sigurt?"/>
+								</p:commandButton>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			
+			</p:repeat>
+			
+			
+			
+		
+		</div>
+
+	</h:form>
+
+</ui:composition>

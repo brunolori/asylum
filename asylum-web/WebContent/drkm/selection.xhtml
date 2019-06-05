@@ -1,0 +1,539 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="drkm_selection_form">
+
+		<f:event type="preRenderComponent"
+			listener="#{drkmSelectionBean.init()}" />
+
+		<h:panelGroup id="in_form">
+
+
+
+
+
+
+
+			<div class="ui-g ui-fluid">
+
+				<div class="ui-g-12">
+					<div class="card card-w-title">
+						<h2>REGJISTRO PËRZGJEDHJEN</h2>
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true">
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+
+							<div class="ui-g-12 ui-md-6">
+
+								<div class="ui-inputgroup">
+
+									<p:inputText value="#{drkmSelectionBean.uniqueNo}"
+										placeholder="Numri Unik" />
+									<p:commandButton value="Kërko" icon="fa fa-search"
+										action="#{drkmSelectionBean.searchEvent()}"
+										update="drkm_selection_form:in_form" />
+									<p:commandButton value="Pastro" icon="fa fa-close"
+										action="#{drkmSelectionBean.clearUniqueNo()}"
+										update="drkm_selection_form:in_form" styleClass="red-btn" />
+								</div>
+
+							</div>
+
+
+							<h:panelGroup rendered="#{drkmSelectionBean.event == null}">
+
+
+								<div class="ui-g-12">
+
+									<p:dataTable value="#{drkmSelectionBean.events}" var="e"
+										rowIndexVar="r" selection="#{drkmSelectionBean.selectedEvent}"
+										selectionMode="single" rowKey="#{e.id}">
+										<f:facet name="header"> Lista e regjistrimeve të fundit</f:facet>
+										<p:ajax event="rowSelect"
+											listener="#{drkmSelectionBean.onEventSelect()}"
+											update="drkm_selection_form:in_form" />
+										<p:column headerText="#">
+												#{r+1}
+											</p:column>
+										<p:column headerText="Nr unik">
+												#{e.uniqurNumber}
+											</p:column>
+										<p:column headerText="Data">
+												#{formatBean.formatTimestamp(e.eventDate)}
+											</p:column>
+										<p:column headerText="Tipi Vendit">
+												#{e.placeType.tag}
+											</p:column>
+										<p:column headerText="Struktura">
+												#{e.organization.tag}
+											</p:column>
+										<p:column headerText="Përdoruesi">
+												#{e.recordUser}
+											</p:column>
+									</p:dataTable>
+
+								</div>
+							</h:panelGroup>
+
+						</div>
+					</div>
+				</div>
+
+<h:panelGroup rendered="#{drkmSelectionBean.event != null}"
+										>
+				<div class="ui-g-12">
+					<div class="card card-w-title" >
+						<h2 style="color: #B00020; font-weight: bold">Konstatimi</h2>
+						<div class="ui-g">
+							<div class="ui-g-12 nopad">
+								<div class="ui-g-12">
+									
+										<p:panelGrid layout="grid" columns="1"
+											styleClass="ui-panelgrid-blank">
+
+											<p:panelGrid layout="grid" columns="4"
+												columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4"
+												styleClass="ui-panelgrid-blank">
+
+												<p:outputLabel value="Nr Unik" />
+												<p:inputText value="#{drkmSelectionBean.event.uniqurNumber}"
+													readonly="true" />
+												<p:outputLabel value="Data Regjistrimit" />
+												<p:inputText
+													value="#{formatBean.formatDate(drkmSelectionBean.event.eventDate)}"
+													readonly="true" />
+												<p:outputLabel value="Tipi Vendit" />
+												<p:inputText
+													value="#{drkmSelectionBean.event.placeType.tag}"
+													readonly="true" />
+												<p:outputLabel value="Vendi" />
+												<p:inputText value="#{drkmSelectionBean.event.place}"
+													readonly="true" />
+												<p:outputLabel value="Përshkrimi" />
+												<p:inputTextarea
+													value="#{drkmSelectionBean.event.description}"
+													readonly="true" />
+
+											</p:panelGrid>
+
+											<p:dataTable value="#{drkmSelectionBean.eventOfficers}"
+												var="eo"
+												rendered="#{not empty drkmSelectionBean.eventOfficers}">
+												<p:column headerText="Oficeri Raportues"
+													style="text-align:left">#{eo.name} #{eo.surname}</p:column>
+												<p:column headerText="Grada" style="text-align:left">#{eo.grade}</p:column>
+												<p:column headerText="Organizata" style="text-align:left">#{eo.organization}</p:column>
+											</p:dataTable>
+
+											<p:dataTable value="#{drkmSelectionBean.eventEvidences}"
+												var="ee"
+												rendered="#{not empty drkmSelectionBean.eventEvidences}">
+												<p:column headerText="Emri Provës" style="text-align:left">#{ee.name}</p:column>
+												<p:column headerText="Përshkrimi" style="text-align:left">#{ee.description}</p:column>
+											</p:dataTable>
+
+										</p:panelGrid>
+
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+</h:panelGroup>
+
+
+
+
+				<h:panelGroup rendered="#{drkmSelectionBean.event != null}">
+
+
+					<div class="ui-g-12">
+
+						<div class="card card-w-title">
+							<h2>Dokumenti udhëtimit</h2>
+							<div class="ui-g">
+								<div class="ui-g-12">
+									<p:panelGrid columns="3" layout="grid"
+										styleClass="ui-panelgrid-blank"
+										columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-6,ui-g-12 ui-md-4">
+										<p:outputLabel value="Kërko në TIMS" />
+										<p:autoComplete id="ac_tims_doc" placeholder="Nr dokumentit"
+											value="#{drkmSelectionBean.timsDocument}" minQueryLength="3"
+											completeMethod="#{cacheBean.searchTimsDocument}" var="td"
+											itemLabel="#{td}" itemValue="#{td}"
+											converter="timsDocumentConverter">
+
+											<p:ajax event="itemSelect"
+												listener="#{drkmSelectionBean.onTimsDocumentSelect}"
+												update="drkm_selection_form:tims_doc ac_tims_doc" />
+
+										</p:autoComplete>
+									</p:panelGrid>
+								</div>
+								<div class="ui-g-12">
+									<p:panelGrid id="tims_doc" columns="6" layout="grid"
+										styleClass="ui-panelgrid-blank"
+										columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-2,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-2,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-2">
+
+										<p:outputLabel value="Nr Dokumentit" />
+										<p:inputText value="#{drkmSelectionBean.document.travelDocNo}" />
+
+										<p:outputLabel value="Tipi" />
+										<p:selectOneMenu
+											value="#{drkmSelectionBean.document.codeTypeTravelDoc}"
+											autoWidth="false">
+											<f:selectItem itemValue="#{null}" itemLabel="Tipi" />
+											<f:selectItems value="#{drkmSelectionBean.docTypes}"
+												var="tds" itemValue="#{tds.code}" itemLabel="#{tds.tag}" />
+										</p:selectOneMenu>
+
+										<p:outputLabel value="Shteti" />
+										<p:autoComplete autoWidth="false" 
+										value="#{drkmSelectionBean.document.codeState}" 
+										var="state" itemValue="#{state.code}" itemLabel="#{state}"
+										completeMethod="#{cacheBean.searchState}"/>
+
+										<p:outputLabel value="Datë Lëshimi" />
+										<p:calendar pattern="dd.MM.yyyy" navigator="true"
+											value="#{drkmSelectionBean.document.dateOfIssue}" />
+
+										<p:outputLabel value="Data Skadimit" />
+										<p:calendar pattern="dd.MM.yyyy" navigator="true"
+											value="#{drkmSelectionBean.document.dateOfExpiration}" />
+
+										<p:outputLabel value="Data Shtyrjes" />
+										<p:calendar pattern="dd.MM.yyyy" navigator="true"
+											value="#{drkmSelectionBean.document.dateOfExtension}" />
+
+									</p:panelGrid>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ui-g-12">
+						<div class="card card-w-title">
+							<h2>Gjeneralitetet</h2>
+							<div class="ui-g">
+								<div class="ui-g-12">
+									<p:panelGrid columns="6" layout="grid"
+										styleClass="ui-panelgrid-blank"
+										columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-2,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-2,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-2">
+
+										<p:outputLabel value="Emri" />
+										<p:inputText value="#{drkmSelectionBean.person.name}" />
+
+										<p:outputLabel value="Emri mesëm" />
+										<p:inputText value="#{drkmSelectionBean.person.midleName}" />
+
+										<p:outputLabel value="Mbiemri" />
+										<p:inputText value="#{drkmSelectionBean.person.surname}" />
+
+										<p:outputLabel value="Emri tjetër" />
+										<p:inputText value="#{drkmSelectionBean.person.name1}" />
+
+										<p:outputLabel value="Mbiemri tjetër" />
+										<p:inputText value="#{drkmSelectionBean.person.surname1}" />
+
+										<p:outputLabel value="Datëlindja" />
+										<p:calendar pattern="dd.MM.yyyy" navigator="true"
+											value="#{drkmSelectionBean.person.dob}" />
+
+										<p:outputLabel value="Atësia" />
+										<p:inputText value="#{drkmSelectionBean.person.fatherName}" />
+
+										<p:outputLabel value="Amësia" />
+										<p:inputText value="#{drkmSelectionBean.person.motherName}" />
+
+										<p:outputLabel value="Gjinia" />
+										<p:selectOneMenu value="#{drkmSelectionBean.person.gender}">
+											<f:selectItem itemValue="#{null}" itemLabel="Gjinia" />
+											<f:selectItem itemValue="M" itemLabel="Mashkull" />
+											<f:selectItem itemValue="F" itemLabel="Femër" />
+										</p:selectOneMenu>
+
+										<p:outputLabel value="Shteti Lindjes" />										
+											<p:autoComplete  autoWidth="false" 
+										value="#{drkmSelectionBean.person.codeStateBirth}" 
+										var="state" itemValue="#{state.code}" itemLabel="#{state}"
+										completeMethod="#{cacheBean.searchState}"/>
+
+										<p:outputLabel value="Qyteti Lindjes" />
+										<p:inputText value="#{drkmSelectionBean.person.codeCityBirth}" />
+
+										<p:outputLabel value="Nacionaliteti" />										
+											<p:autoComplete autoWidth="false" 
+										value="#{drkmSelectionBean.person.codeNationality}" 
+										var="state" itemValue="#{state.code}" itemLabel="#{state}"
+										completeMethod="#{cacheBean.searchState}"/>
+											
+
+										<p:outputLabel value="Statusi Civil" />
+										<p:selectOneMenu
+											value="#{drkmSelectionBean.person.codeCivilStatus}">
+											<f:selectItem itemValue="#{null}" itemLabel="Statusi Civil" />
+											<f:selectItem itemValue="1" itemLabel="Beqar/e" />
+											<f:selectItem itemValue="2" itemLabel="Martuar" />
+											<f:selectItem itemValue="3" itemLabel="Divorcuar" />
+											<f:selectItem itemValue="4" itemLabel="i/e Ve" />
+										</p:selectOneMenu>
+
+										<p:outputLabel value="Profesioni" />
+										<p:inputText value="#{drkmSelectionBean.person.profesion}" />
+										<p:outputLabel value="Besimi Fetar" />
+										<p:inputText value="#{drkmSelectionBean.person.religion}" />
+
+
+									</p:panelGrid>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="ui-g-12">
+						<h:panelGroup id="other_doc">
+							<div class="card card-w-title">
+								<h2>Dokumenta të tjerë</h2>
+								<div class="ui-g">
+									<div class="ui-g-12 ui-md-4 nopad">
+										<div class="ui-g nopad">
+											<div class="ui-g-12 nopad">
+												<p:panelGrid columns="2" layout="grid"
+													columnClasses="ui-g-12 ui-md-4 bold,ui-g-12 ui-md-8"
+													styleClass="ui-panelgrid-blank form-group">
+
+													<p:outputLabel value="Nr Dokumentit" />
+													<p:inputText
+														value="#{drkmSelectionBean.otherDocument.documentNo}" />
+													<p:outputLabel value="Tipi" />
+													<p:selectOneMenu
+														value="#{drkmSelectionBean.otherDocument.docType}"
+														autoWidth="false">
+														<f:selectItem itemValue="#{null}" itemLabel="Tipi" />
+														<f:selectItems value="#{drkmSelectionBean.docTypes}"
+															var="dts" itemValue="#{dts.code}" itemLabel="#{dts.tag}" />
+													</p:selectOneMenu>
+													<p:outputLabel value="Shteti" />
+													
+														<p:autoComplete autoWidth="false" 
+										value="#{drkmSelectionBean.otherDocument.state}" 
+										var="state" itemValue="#{state.code}" itemLabel="#{state}"
+										completeMethod="#{cacheBean.searchState}"/>
+
+												</p:panelGrid>
+											</div>
+											<div class="ui-g-12 nopad">
+												<h:panelGrid columns="2" >
+													<p:commandButton value="Shto" styleClass="success-btn" 
+														action="#{drkmSelectionBean.addOtherDocument()}"
+														update="drkm_selection_form:other_doc" icon="fa fa-plus" />
+													<p:commandButton value="Pastro" styleClass="warning-btn"
+														action="#{drkmSelectionBean.clearOtherDocument()}"
+														update="drkm_selection_form:other_doc" icon="fa fa-trash" />
+												</h:panelGrid>
+											</div>
+
+										</div>
+									</div>
+									<div class="ui-g-12 ui-md-8">
+										<p:dataTable id="other_doc_list" styleClass="no-border" rendered="#{not empty drkmSelectionBean.otherDocuments}"
+											value="#{drkmSelectionBean.otherDocuments}" var="od"
+											rowIndexVar="r" emptyMessage="Nuk ka dokumenta te tjere">
+											<p:column headerText="#">
+									#{r+1}
+									</p:column>
+											<p:column headerText="Nr Dokumenti">
+									#{od.documentNo}
+									</p:column>
+											<p:column headerText="Tipi">
+									#{od.docType}
+						</p:column>
+											<p:column headerText="Shteti">
+									#{od.state}
+						</p:column>
+											<p:column>
+												<p:commandLink value="hiq"
+													action="#{drkmSelectionBean.removeOtherDocument(od)}"
+													style="color: #FF1300" styleClass="bold"
+													update="drkm_selection_form:other_doc" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+
+					<div class="ui-g-12">
+						<h:panelGroup id="interview">
+							<div class="card card-w-title">
+								<h2>Intervista</h2>
+								<div class="ui-g">
+									<div class="ui-g-12">
+										<p:panelGrid columns="2" layout="grid"
+											columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-6"
+											styleClass="ui-panelgrid-blank form-group">
+
+											<p:outputLabel value="Deklarimi i Statusit të parregullt" />
+											<p:selectOneMenu
+												value="#{drkmSelectionBean.selection.irStatus}"
+												converter="irStatusConverter">
+												<p:ajax process="interview" update="interview" />
+												<f:selectItem itemValue="#{null}" itemLabel=" " />
+												<f:selectItems value="#{drkmSelectionBean.irStatuses}"
+													var="irs" itemLabel="#{irs.tag}" itemValue="#{irs}" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+									</div>
+									<div class="ui-g-12">
+										<p:panelGrid columns="2" layout="grid"
+											rendered="#{drkmSelectionBean.selection.irStatus.id eq constB.AZILANT}"
+											columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-6"
+											styleClass="ui-panelgrid-blank form-group">
+
+											<p:outputLabel value="Person në nevojë" />
+											<p:selectOneRadio value="#{drkmSelectionBean.details.inNeed}">
+												<f:selectItem itemValue="Y" itemLabel="Po" />
+												<f:selectItem itemValue="N" itemLabel="Jo" />
+											</p:selectOneRadio>
+											<p:outputLabel value="Person me të ardhura" />
+											<p:selectOneRadio
+												value="#{drkmSelectionBean.details.withIncomes}">
+												<f:selectItem itemValue="Y" itemLabel="Po" />
+												<f:selectItem itemValue="N" itemLabel="Jo" />
+											</p:selectOneRadio>
+											<p:outputLabel value="Minoren i pashoqëruar" />
+											<p:selectOneRadio
+												value="#{drkmSelectionBean.details.unaccompainedChild}">
+												<f:selectItem itemValue="Y" itemLabel="Po" />
+												<f:selectItem itemValue="N" itemLabel="Jo" />
+											</p:selectOneRadio>
+											<p:outputLabel value="I rikthyer" />
+											<p:selectOneRadio
+												value="#{drkmSelectionBean.details.returned}">
+												<f:selectItem itemValue="Y" itemLabel="Po" />
+												<f:selectItem itemValue="N" itemLabel="Jo" />
+											</p:selectOneRadio>
+										</p:panelGrid>
+									</div>
+									<div class="ui-g-12">
+										<p:panelGrid columns="2" layout="grid"
+											columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-6"
+											styleClass="ui-panelgrid-blank form-group">
+											<p:outputLabel value="Adresa në Shqipëri" />
+											<p:inputText
+												value="#{drkmSelectionBean.selection.albAddress}" />
+											<p:outputLabel value="Vendi Hyrjes" />
+											<p:inputText
+												value="#{drkmSelectionBean.selection.entryPlace}" />
+											<p:outputLabel value="Menyra e kalimit Kufirit" />
+											<p:inputText value="#{drkmSelectionBean.selection.entryMode}" />
+											<p:outputLabel value="Itinererari" />
+											<p:inputText value="#{drkmSelectionBean.selection.itinerary}" />
+											<p:outputLabel value="Arsyet e largimit nga Vendi Origjinës" />
+											<p:inputText
+												value="#{drkmSelectionBean.selection.fleeingReason}" />
+
+
+										</p:panelGrid>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+
+
+					<div class="ui-g-12">
+						<div class="card card-w-title">
+							<h2>Personeli</h2>
+							<div class="ui-g">
+								<div class="ui-g-12">
+									<p:panelGrid columns="3" layout="grid"
+										styleClass="ui-panelgrid-blank form-group"
+										columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4,ui-g-12 ui-md-6">
+										<p:outputLabel value="Marrësi" />
+										<p:selectOneMenu value="#{drkmSelectionBean.selection.handed}"
+											converter="handedOverConverter">
+											<f:selectItem itemValue="#{null}" itemLabel="Marrësi" />
+											<f:selectItems value="#{drkmSelectionBean.handedOvers}"
+												var="ho" itemValue="#{ho}" itemLabel="#{ho.tag}" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+								</div>
+								<div class="ui-g-12">
+									<p:panelGrid columns="4" layout="grid"
+										styleClass="ui-panelgrid-blank form-group"
+										columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4">
+										<p:outputLabel value="Arsyeja largimit" />
+										<p:inputText value="#{drkmSelectionBean.selection.reason}" />
+										<p:outputLabel value="Data Përpilimit" />
+										<p:calendar pattern="dd.MM.yyyy"
+											value="#{drkmSelectionBean.selection.selectionDate}" />
+										<p:outputLabel value="Përkthyesi" />
+										<p:inputText value="#{drkmSelectionBean.selection.translator}" />
+										<p:outputLabel value="Gjuha" />
+										<p:inputText value="#{drkmSelectionBean.selection.transLang}" />
+									</p:panelGrid>
+								</div>
+								<div class="ui-g-12">
+									<p:panelGrid columns="3" layout="grid"
+										styleClass="ui-panelgrid-blank form-group"
+										columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4,ui-g-12 ui-md-6">
+										<p:outputLabel value="Shënime" />
+										<p:inputTextarea value="#{drkmSelectionBean.selection.notes}" />
+									</p:panelGrid>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="ui-g-12">
+						<div class="card">
+
+							<div class="ui-g">
+								<div class="ui-g-12">
+									<p:messages showDetail="true" closable="true">
+										<p:autoUpdate />
+									</p:messages>
+								</div>
+								<div class="ui-g-12">
+									<p:panelGrid columns="4" layout="grid"
+										styleClass="ui-panelgrid-blank form-group">
+										<p:commandButton value="Regjistro" styleClass="green-btn" icon="fa fa-save"
+											action="#{drkmSelectionBean.register()}"
+											update="drkm_selection_form:in_form" >
+				 	<p:confirm header="Regjistro" message="Jeni të sigurt?" />
+				 </p:commandButton>
+										<p:commandButton value="Regjistro dhe Printo"
+											icon="fa fa-print"
+											styleClass="info-btn"
+											action="#{drkmSelectionBean.registerAndPrint()}"
+											update="drkm_selection_form:in_form" >
+				 	<p:confirm header="Regjistro dhe printo" message="Jeni të sigurt?" />
+				 </p:commandButton>
+										<p:commandButton value="Pastro" styleClass="red-btn" icon="fa fa-trash"
+											action="#{drkmSelectionBean.clear()}"
+											update="drkm_selection_form:in_form" >
+				 	<p:confirm header="Pastro" message="Jeni të sigurt?" />
+				 </p:commandButton>
+									</p:panelGrid>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</h:panelGroup>
+			</div>
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

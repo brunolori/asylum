@@ -1,0 +1,486 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="drkm_home_form">
+
+		<script type="text/javascript">
+			function skinChart() {
+				this.cfg.shadow = false;
+				this.cfg.title = '';
+				this.cfg.seriesColors = [ '#ed3c76', '#f6ac2b', '#7e8dcd',
+						'#39b8b6' ];
+				this.cfg.grid = {
+					background : '#ffffff',
+					borderColor : '#ffffff',
+					gridLineColor : '#dce2e7',
+					shadow : false
+				};
+				this.cfg.axesDefaults = {
+					borderWidth : 0.1,
+					borderColor : 'bdc3c9',
+					rendererOptions : {
+						textColor : '#757575'
+					}
+				};
+				this.cfg.seriesDefaults = {
+					shadow : false,
+					lineWidth : 1,
+					pointLabels : {
+						show : true,
+						formatString : '%d'
+					},
+					markerOptions : {
+						shadow : false,
+						size : 7,
+						style : 'circle'
+					}
+				};
+			}
+
+			function skinBar() {
+				this.cfg.shadow = false;
+				this.cfg.title = '';
+				this.cfg.seriesColors = [ '#00796B', '#3984b8' ];
+				this.cfg.grid = {
+					background : '#ffffff',
+					borderColor : '#ffffff',
+					gridLineColor : '#dce2e7',
+					shadow : false
+				};
+				this.cfg.axesDefaults = {
+					borderWidth : 0.1,
+					borderColor : 'bdc3c9',
+					rendererOptions : {
+						textColor : '#757575'
+					}
+				};
+				this.cfg.seriesDefaults = {
+					shadow : false,
+					lineWidth : 1,
+					renderer : $.jqplot.BarRenderer,
+					pointLabels : {
+						show : true,
+						formatString : '%d'
+					},
+					markerOptions : {
+						shadow : false,
+						size : 7,
+						style : 'circle'
+					}
+				}
+			}
+
+			function skinArea() {
+				this.cfg.shadow = false;
+				this.cfg.title = '';
+				this.cfg.seriesColors = [ '#3984b8', '#39b8b6' ];
+				this.cfg.grid = {
+					background : '#ffffff',
+					borderColor : '#ffffff',
+					gridLineColor : '#dce2e7',
+					shadow : false
+				};
+				this.cfg.axesDefaults = {
+					borderWidth : 0.1,
+					borderColor : 'bdc3c9',
+					rendererOptions : {
+						textColor : '#757575'
+					}
+				};
+				this.cfg.seriesDefaults = {
+					shadow : false,
+					lineWidth : 1,
+					markerOptions : {
+						shadow : false,
+						size : 7,
+						style : 'circle'
+					}
+				}
+			}
+
+			function skinPie() {
+				this.cfg.shadow = false;
+				this.cfg.title = '';
+				this.cfg.seriesColors = [ '#42A5F5', '#7E57C2', '#FFB300',
+						'#66BB6A', '#ed3c76', '#E64A19', '#00796B', '#7e8dcd',
+						'#39b8b6' ];
+				this.cfg.grid = {
+					background : '#ffffff',
+					borderColor : '#ffffff',
+					gridLineColor : '#dce2e7',
+					shadow : false
+				};
+				this.cfg.axesDefaults = {
+					rendererOptions : {
+						textColor : '#757575',
+					}
+				};
+				this.cfg.seriesDefaults = {
+					renderer : $.jqplot.PieRenderer,
+					shadow : false,
+					lineWidth : 1,
+					markerOptions : {
+						shadow : false,
+						size : 7,
+						style : 'circle'
+					}
+				}
+			}
+		</script>
+		<style type="text/css">
+.jqplot-xaxis-label, .jqplot-yaxis-label, .jqplot-y2axis-label,
+	.jqplot-x2axis-label {
+	color: #757575;
+}
+
+table.jqplot-table-legend {
+	background-color: #ffffff;
+	color: #757575;
+	border-color: #dce2e7;
+}
+</style>
+
+
+
+
+
+		<div class="ui-g dashboard">
+			<div class="ui-g-12">
+				<div class="card ">
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-5 ui-fluid">
+
+							<p:panelGrid layout="grid" columns="3"
+								styleClass="ui-panelgrid-blank">
+								<p:outputLabel value="Nga data" styleClass="bold" />
+								<p:outputLabel value="Në datën" styleClass="bold" />
+								<p:outputLabel value="Organizata" styleClass="bold" />
+								<p:calendar value="#{drkmDashboardBean.from}"
+									pattern="dd.MM.yyyy" navigator="true">
+									<p:ajax event="dateSelect"
+										listener="#{drkmDashboardBean.onFilterChange()}"
+										update="@form" />
+								</p:calendar>
+								<p:calendar value="#{drkmDashboardBean.to}" pattern="dd.MM.yyyy"
+									navigator="true">
+									<p:ajax event="dateSelect"
+										listener="#{drkmDashboardBean.onFilterChange()}"
+										update="@form" />
+								</p:calendar>
+								<p:selectOneMenu
+									disabled="#{not loginBean.userToken.user.organization.central}"
+									value="#{drkmDashboardBean.organizationId}" autoWidth="false">
+									<p:ajax listener="#{drkmDashboardBean.onFilterChange()}"
+										update="@form" />
+									<f:selectItem itemValue="#{null}"
+										itemLabel="#{loginBean.userToken.user.organization.central?'Të gjitha':loginBean.userToken.user.organization.tag}" />
+									<f:selectItems value="#{drkmDashboardBean.organizations}"
+										var="o" itemValue="#{o.id}" itemLabel="#{o.tag}" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+
+						</div>
+						<div class="ui-g-12 ui-md-7 ui-fluid">
+
+							<p:panelGrid layout="grid" columns="1"
+								styleClass="ui-panelgrid-blank">
+								<p:outputLabel styleClass="bold"
+									value="Zgjidhni periudhën ose datat sipas dëshirës" />
+
+								<p:selectOneRadio value="#{drkmDashboardBean.period}"
+									columns="3">
+
+									<p:ajax listener="#{drkmDashboardBean.onPeriodSelect()}"
+										update="@form" />
+									<f:selectItem itemLabel="#{formatBean.thisMonth()}"
+										itemValue="1" />
+									<f:selectItem itemLabel="#{formatBean.thisYear()}"
+										itemValue="2" />
+									<f:selectItem itemLabel="#{formatBean.lastMonth()}"
+										itemValue="3" />
+									<f:selectItem itemLabel="#{formatBean.lastThreeMonths()}"
+										itemValue="4" />
+									<f:selectItem itemLabel="#{formatBean.lastSixMonths()}"
+										itemValue="5" />
+									<f:selectItem itemLabel="#{formatBean.lastYear()}"
+										itemValue="6" />
+								</p:selectOneRadio>
+							</p:panelGrid>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #42A5F5">
+					<div class="overview-box-title" style="color: white">Gjithsej</div>
+					<div class="overview-box-details">
+						<i class="fa fa-globe overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.total}</span>
+					</div>
+					<div class="overview-box-stats" style="color: #42A5F5">-</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #7E57C2">
+					<div class="overview-box-title" style="color: white">Meshkuj</div>
+					<div class="overview-box-details">
+						<i class="fa fa-male overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.male}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.male,drkmDashboardBean.total)}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #FFB300">
+					<div class="overview-box-title" style="color: white">Femra</div>
+					<div class="overview-box-details">
+						<i class="fa fa-female overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.female}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.female,drkmDashboardBean.total)}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #F5F5F5">
+					<div class="overview-box-title">Pa gjini</div>
+					<div class="overview-box-details">
+						<i class="fa fa-transgender-alt overview-box-details-icon" /> <span
+							class="overview-box-details-count">#{drkmDashboardBean.noGender}</span>
+					</div>
+					<div class="overview-box-stats">#{formatBean.formatPrc(drkmDashboardBean.noGender,drkmDashboardBean.total)}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #66BB6A">
+					<div class="overview-box-title" style="color: white">Fëmijë</div>
+					<div class="overview-box-details">
+						<i class="fa fa-child overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.child}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.child,drkmDashboardBean.total)}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #00796B">
+					<div class="overview-box-title" style="color: white">Të
+						larguar</div>
+					<div class="overview-box-details">
+						<i class="fa fa-sign-out overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.gone}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.gone,drkmDashboardBean.total)}</div>
+				</div>
+			</div>
+
+
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #ed3c76">
+					<div class="overview-box-title" style="color: white">Azilantë</div>
+					<div class="overview-box-details">
+						<i class="fa fa-ban overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.azylant}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.azylant,drkmDashboardBean.total)}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #E64A19">
+					<div class="overview-box-title" style="color: white">Viktima
+						Trafiku</div>
+					<div class="overview-box-details">
+						<i class="fa fa-h-square overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.trafficVictim}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.trafficVictim,drkmDashboardBean.total)}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #5AC8FA">
+					<div class="overview-box-title" style="color: white">Imigrant
+						të parregullt</div>
+					<div class="overview-box-details">
+						<i class="fa fa-flag overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.irregularImigrant}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.irregularImigrant,drkmDashboardBean.total)}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #FF3B30">
+					<div class="overview-box-title" style="color: white">URDHER
+						PER NDALIM</div>
+					<div class="overview-box-details">
+						<i class="fa fa-flag overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.detentionOrder}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.detentionOrder,(drkmDashboardBean.detentionOrder+drkmDashboardBean.removalOrder+drkmDashboardBean.expulsionOrder))}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #007AFF">
+					<div class="overview-box-title" style="color: white">URDHER
+						DEBIMI</div>
+					<div class="overview-box-details">
+						<i class="fa fa-flag overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.expulsionOrder}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.expulsionOrder,(drkmDashboardBean.detentionOrder+drkmDashboardBean.removalOrder+drkmDashboardBean.expulsionOrder))}</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+				<div class="ui-g card overview-box overview-box-1 no-gutter"
+					style="background-color: #607D8B">
+					<div class="overview-box-title" style="color: white">URDHER
+						LARGIMI</div>
+					<div class="overview-box-details">
+						<i class="fa fa-flag overview-box-details-icon"
+							style="color: white" /> <span class="overview-box-details-count"
+							style="color: white">#{drkmDashboardBean.removalOrder}</span>
+					</div>
+					<div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(drkmDashboardBean.removalOrder,(drkmDashboardBean.detentionOrder+drkmDashboardBean.removalOrder+drkmDashboardBean.expulsionOrder))}</div>
+				</div>
+			</div>
+
+
+			<div class="ui-g-12 ui-md-3 ">
+				<div class="card card-w-title ">
+					<h2>Regjistrime sipas statusit</h2>
+					<div class="ui-g">
+						<div class="ui-g-12 nopad">
+							<p:chart type="pie" model="#{drkmDashboardBean.statusModel}"
+								responsive="true" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-3 ">
+				<div class="card card-w-title ">
+					<h2>Regjistrime sipas vendit</h2>
+					<div class="ui-g">
+						<div class="ui-g-12 nopad">
+							<p:chart type="pie" model="#{drkmDashboardBean.placeTypeModel}"
+								responsive="true" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-3 ">
+				<div class="card card-w-title ">
+					<h2>Vendime të regjistruara</h2>
+					<div class="ui-g">
+						<div class="ui-g-12 nopad">
+							<p:chart type="pie" model="#{drkmDashboardBean.decisionModel}"
+								responsive="true" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-3">
+				<div class="card card-w-title">
+					<h2>Regjistrime sipas Shteteve</h2>
+					<div class="ui-g">
+						<div class="ui-g-12 nopad">
+							<p:chart type="pie" model="#{drkmDashboardBean.stateModel}"
+								responsive="true" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="ui-g-12 ui-md-8">
+				<div class="ui-g">
+					<div class="ui-g-12 ">
+						<div class="card card-w-title">
+							<h2>Regjistrime sipas Datave</h2>
+							<div class="ui-g">
+								<div class="ui-g-12 ">
+									<p:chart type="line" model="#{drkmDashboardBean.dayModel}"
+										responsive="true" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="ui-g-12 ">
+						<div class="card card-w-title">
+							<h2>Regjistrime sipas DRKM</h2>
+							<div class="ui-g">
+								<div class="ui-g-12 ">
+									<p:chart type="bar"
+										model="#{drkmDashboardBean.organizationModel}"
+										responsive="true" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="ui-g-12 ui-md-4">
+				<div class="ui-g">
+
+					<div class="ui-g-12 global-sales">
+						<p:panel header="SIPAS SHTETEVE">
+							<div class="globe">
+								<p:graphicImage name="images/dashboard/globe.png"
+									library="paradise-layout" width="45" />
+							</div>
+
+							<span class="sale-interval">#{formatBean.formatDateName(drkmDashboardBean.from)}
+								- #{formatBean.formatDateName(drkmDashboardBean.to)}</span>
+
+							<table>
+								<tbody>
+
+									<p:repeat value="#{drkmDashboardBean.regByState}" var="r">
+										<tr>
+											<td><p:graphicImage
+													name="/flags/48x48/#{r.key.toLowerCase()}.png"
+													library="images" width="45" /></td>
+											<td>#{cacheBean.stateName(r.key)}</td>
+											<td>#{r.value}</td>
+											<td>#{formatBean.formatPrc(r.value,drkmDashboardBean.total)}</td>
+										</tr>
+									</p:repeat>
+
+								</tbody>
+							</table>
+						</p:panel>
+					</div>
+
+				</div>
+			</div>
+
+
+		</div>
+
+	</h:form>
+
+</ui:composition>

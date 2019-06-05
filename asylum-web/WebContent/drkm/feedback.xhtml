@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="drkm_feedback_form">
+
+
+
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<div class="card card-w-title">
+					<h2>Komentet/Feedback</h2>
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<p:panelGrid columns="4" layout="grid"
+								styleClass="ui-panelgrid-blank">
+								<p:inputText value="#{drkmFeedbackBean.req.uniqueNo}"
+									placeholder="Nr Unik" />
+								<p:inputText value="#{drkmFeedbackBean.req.name}"
+									placeholder="Emri" />
+								<p:inputText value="#{drkmFeedbackBean.req.surname}"
+									placeholder="Mbiemri" />	
+									
+								<p:outputLabel/>	
+														
+								<p:calendar pattern="dd.MM.yyyy"
+									value="#{drkmFeedbackBean.req.from}" placeholder="Nga data" />
+								<p:calendar pattern="dd.MM.yyyy"
+									value="#{drkmFeedbackBean.req.to}" placeholder="Në data" />
+							</p:panelGrid>
+							<p:panelGrid columns="4" layout="grid"
+								styleClass="ui-panelgrid-blank">
+								<p:commandButton value="Kërko"
+									action="#{drkmFeedbackBean.searchFeedback()}" icon="fa fa-search"
+									update="drkm_feedback_form" />
+								<p:commandButton value="Pastro" icon="fa fa-trash"
+									action="#{drkmFeedbackBean.clear()}" styleClass="green-btn" 
+									update="drkm_feedback_form" />
+							</p:panelGrid>
+						</div>
+
+						<div class="ui-g-12">
+							<p:messages showDetail="true" closable="true">
+								<p:autoUpdate />
+							</p:messages>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-g-12">
+			
+
+			
+			
+				<p:dataTable value="#{drkmFeedbackBean.feedbacks}" var="f" 
+					rowIndexVar="r" paginator="true" rows="20" styleClass="no-border"
+					rowsPerPageTemplate="10,20,30,50" paginatorAlwaysVisible="false"
+					rowKey="#{f.id}" emptyMessage="Nuk ka feedback">
+
+
+					<p:column headerText="#" style="text-align: left">
+								#{r+1}
+								</p:column>
+					<p:column headerText="Nr unik" style="text-align: left">
+								#{f.selection.event.uniqurNumber}
+								</p:column>
+					<p:column headerText="Foto" style="text-align: left">
+						<p:graphicImage value="#{photoBean.bioImg}" width="50px">
+							<f:param name="event_id" value="#{f.selection.event.id}" />
+						</p:graphicImage>
+					</p:column>
+					<p:column headerText="Emri Mbiemri" style="text-align: left">
+						<p:commandLink
+							value="#{f.selection.person.name} #{f.selection.person.surname}"
+							action="#{drkmFeedbackBean.onSelectionSelect(f)}"
+							update=":main" />
+					</p:column>
+					<p:column headerText="Shteti" style="text-align: left">
+								#{f.selection.person.codeNationality}
+					</p:column>
+					<p:column headerText="Dt feedback" style="text-align: left">
+								#{formatBean.formatTimestamp(f.feedbackTime)}
+					</p:column>
+					<p:column headerText="Përdoruesi" style="text-align: left">
+								#{f.feedbackUser}
+					</p:column>
+					<p:column headerText="Shënime" style="text-align: left">
+								#{f.notes}
+					</p:column>
+				</p:dataTable>
+				
+				
+			</div>
+
+
+		</div>
+
+	</h:form>
+
+
+
+</ui:composition>

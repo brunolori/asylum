@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pv="http://primefaces.org/paradise">
+
+	<div
+		class="layout-menu-wrapper #{guestPreferences.darkMenu ? 'layout-menu-dark' : null}">
+		<div class="nano">
+			<div class="nano-content sidebar-scroll-content">
+				<div class="layout-menu-container">
+					<h:form id="menuform">
+						<pv:menu>
+
+							<p:menuitem id="dfac_dashboard" value="Dashboard" icon="fa fa-fw fa-dashboard" action="#{menuBean.navigate('home','dfac')}"/>
+
+							<p:menuitem id="dfac_selection_list" value="Të përzgjedhurit" icon="fa fa-users" action="#{menuBean.navigate('selection_sx','dfac')}"/>
+							
+								
+							<p:submenu id="dfac_interview" label="Intervista" icon="fa fa-question">
+								<p:menuitem id="dfac_interview_ready" value="Gati për intervistim" icon="fa fa-pause" action="#{menuBean.navigate('interview_selected','dfac')}" />
+								<p:menuitem id="dfac_interview_completed" value="Të intervistuar" icon="fa fa-check-square-o" action="#{menuBean.navigate('interviewed','dfac')}"/>
+							</p:submenu>
+							
+							<p:submenu id="dfac_hearing" label="Dëgjimet" icon="fa fa-headphones">
+								<p:menuitem id="dfac_hearing_ready" value="Gati për dëgjim" icon="fa fa-pause" action="#{menuBean.navigate('hearing_selected','dfac')}"/>
+								<p:menuitem id="dfac_hearing_completed" value="Të dëgjuar" icon="fa fa-check-square-o" action="#{menuBean.navigate('heared','dfac')}"/>
+							</p:submenu>
+							
+							<p:submenu id="dfac_transfer" label="Transferimet" icon="fa fa-exchange">
+								<p:menuitem id="dfac_transfer_departed" value="Të nisur" icon="fa fa-rocket" action="#{menuBean.navigate('transfer_waiting','dfac')}"/>
+								<p:menuitem id="dfac_transfer_arrived" value="Mbërritur" icon="fa fa-sign-in" action="#{menuBean.navigate('transfer_completed','dfac')}"/>
+								<p:menuitem id="dfac_transfer_rejected" value="Kthyer" icon="fa fa-exclamation-triangle" action="#{menuBean.navigate('transfer_rejected','dfac')}"/>
+								<p:menuitem id="dfac_transfer_gone" value="Larguar" icon="fa fa-level-down" action="#{menuBean.navigate('transfer_gone','dfac')}"/>
+							</p:submenu>
+							
+							
+
+
+
+							
+						</pv:menu>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</ui:composition>

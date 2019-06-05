@@ -1,0 +1,736 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<h:form id="dfac_selection_view_form">
+		<f:event type="preRenderComponent"
+			listener="#{dfacSelectionViewBean.init()}" />
+
+		<h:panelGroup layout="block" id="selection_data">
+			<div class="ui-g ui-fluid dashboard">
+
+				<div class="ui-g-12 ui-md-1">
+					<p:commandButton action="#{navBean.back()}" value="Mbrapa"
+						process="@this" update=":main" styleClass="green-btn"
+						icon="fa fa-arrow-left" />
+				</div>
+				<div class="ui-g-12 ui-md-9"></div>
+				<div class="ui-g-12 ui-md-2">
+					<p:splitButton value="Veprime" styleClass="red-btn button-menu"
+						 >
+						<p:menuitem value="Modifiko Gjeneralitetet" icon="fa fa-wrench"
+							action="#{dfacSelectionViewBean.openEdit()}"
+							update="dfac_selection_view_form:selection_data" />
+						<p:menuitem value="Jep Feedback" icon="fa fa-comments"
+							action="#{dfacSelectionViewBean.prepareFeedback()}"
+							oncomplete="PF('feedbackWid').show();" update=":feedback_dlg" />
+						<p:menuitem value="Proces i përshpejtuar" icon="fa fa-fast-forward"
+							action="#{dfacSelectionViewBean.acceleratedProcess()}"
+							update="dfac_selection_view_form:selection_data">
+							<p:confirm header="Proces i Përshpejtuar"
+								message="Jeni të sigurt?" />
+						</p:menuitem>
+						
+						<p:menuitem value="Përzgjidh për intervistë" icon="fa fa-thumb-tack"
+							action="#{dfacSelectionViewBean.prepareSelectForInterview()}"
+							oncomplete="PF('selectInterviewWid').show();" update=":select_interview_dlg" />
+						<p:menuitem value="Intervisto" icon="fa fa-question"
+							action="#{dfacSelectionViewBean.prepareInterview()}" />
+						<p:menuitem value="Përzgjidh për dëgjesë" icon="fa fa-thumb-tack"
+							action="#{dfacSelectionViewBean.prepareSelectForHearing()}"
+							oncomplete="PF('selectHearingWid').show();" update=":select_hearing_dlg" />
+						<p:menuitem value="Dëgjo" icon="fa fa-headphones"
+							action="#{dfacSelectionViewBean.prepareHearing()}" />
+						<p:menuitem value="Përcaktim Statusi" icon="fa fa-info"
+							action="#{dfacSelectionViewBean.prepareAsylumDecision()}"
+							oncomplete="PF('asDecisionWid').show();"
+							update=":as_decision_dlg" />
+						<p:menuitem value="Regjistro Ankimim" icon="fa fa-retweet"
+							action="#{dfacSelectionViewBean.prepareAppeal()}"
+							oncomplete="PF('appealWid').show();" update=":appeal_dlg" />
+						<p:menuitem value="Regjistro Opinion nga Inst" icon="fa fa-sticky-note"
+							action="#{dfacSelectionViewBean.prepareOpinion()}"
+							oncomplete="PF('opinionWid').show();" update=":opinion_dlg" />
+					</p:splitButton>
+				</div>
+
+
+				<div class="ui-g-12 ui-fluid">
+					<p:messages showDetail="true" closable="true">
+						<p:autoUpdate />
+					</p:messages>
+				</div>
+
+
+				<div class="ui-g-12 ui-fluid nopad">
+
+					<div class="ui-g">
+
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+							<h:panelGroup rendered="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus != null}">
+								<h1 style="font-weight: bold">
+								#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus.tag} (#{dfacSelectionViewBean.selection.asylantDetails.asylantStage.tag})
+								</h1>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus == null}">
+								<h1 style="font-weight: bold; color: #FF1300">
+								Statusi Azilantit i Papërcaktuar
+								</h1>
+							</h:panelGroup>
+								
+								<div class="ui-g">
+									<div class="ui-g-12 ui-md-3">
+										<h:panelGrid layout="grid" columns="2"
+											styleClass="ui-panelgrid-blank">
+											<p:graphicImage width="40px" library="images"
+												name="#{dfacSelectionViewBean.selection.asylantDetails.acceleratedProcess == 'Y'.charAt(0)?'green-flag.png':'grey-flag.png'}" />
+											<p:outputLabel styleClass="bold"
+												value="Proces i përshpejtuar" />
+										</h:panelGrid>
+									</div>
+									<div class="ui-g-12 ui-md-3">
+										<h:panelGrid layout="grid" columns="2"
+											styleClass="ui-panelgrid-blank">
+											<p:graphicImage width="40px" library="images"
+												name="#{dfacSelectionViewBean.selection.asylantDetails.unaccompainedChild == 'Y'.charAt(0)?'red-flag.png':'grey-flag.png'}" />
+											<p:outputLabel styleClass="bold" value="Fëmijë i pashoqëruar" />
+										</h:panelGrid>
+									</div>
+									<div class="ui-g-12 ui-md-3">
+										<h:panelGrid layout="grid" columns="2"
+											styleClass="ui-panelgrid-blank">
+											<p:graphicImage width="40px" library="images"
+												name="#{dfacSelectionViewBean.selection.asylantDetails.inNeed == 'Y'.charAt(0)?'red-flag.png':'grey-flag.png'}" />
+											<p:outputLabel styleClass="bold" value="Person në nevojë" />
+										</h:panelGrid>
+									</div>
+									<div class="ui-g-12 ui-md-3">
+										<h:panelGrid layout="grid" columns="2"
+											styleClass="ui-panelgrid-blank">
+											<p:graphicImage width="40px" library="images"
+												name="#{dfacSelectionViewBean.selection.asylantDetails.withIncomes == 'Y'.charAt(0)?'blue-flag.png':'grey-flag.png'}" />
+											<p:outputLabel styleClass="bold" value="Person me të ardhura" />
+										</h:panelGrid>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+								<h1 style="font-weight: bold">Gjeneralitetet</h1>
+
+								<div class="ui-g">
+									<div class="ui-g-12 ui-md-3">
+										<p:panelGrid layout="grid" columns="1"
+											styleClass="ui-panelgrid-blank">
+
+											<p:graphicImage value="#{photoBean.bioImg}" width="70%">
+												<f:param name="event_id"
+													value="#{dfacSelectionViewBean.selection.event.id}" />
+											</p:graphicImage>
+
+										</p:panelGrid>
+									</div>
+									<div class="ui-g-12 ui-md-9">
+										<p:panelGrid layout="grid" columns="4"
+											columnClasses="bold,empty,bold,empty"
+											styleClass="ui-panelgrid-blank">
+											<p:outputLabel value="Emri" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.name}"
+												readonly="true" />
+											<p:outputLabel value="Mbiemri" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.surname}"
+												readonly="true" />
+											<p:outputLabel value="Atësia" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.fatherName}"
+												readonly="true" />
+											<p:outputLabel value="Mëmësia" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.motherName}"
+												readonly="true" />
+											<p:outputLabel value="Datëlindja" />
+											<p:inputText
+												value="#{formatBean.formatDate(dfacSelectionViewBean.selection.person.dob)}"
+												readonly="true" />
+											<p:outputLabel value="Gjinia" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.gender}"
+												readonly="true" />
+											<p:outputLabel value="Vendlindja" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.codeStateBirth}"
+												readonly="true" />
+											<p:outputLabel value="NID" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.nid}"
+												readonly="true" />
+											<p:outputLabel value="Statusi Civil" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.codeCivilStatus}"
+												readonly="true" />
+											<p:outputLabel value="Shtetësia" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.codeNationality}"
+												readonly="true" />
+											<p:outputLabel value="Profesioni" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.profesion}"
+												readonly="true" />
+											<p:outputLabel value="Besimi Fetar" />
+											<p:inputText
+												value="#{dfacSelectionViewBean.selection.person.religion}"
+												readonly="true" />
+										</p:panelGrid>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="ui-g-12">
+
+							<p:tabView>
+								<p:tab title="Konstatimi">
+
+									<p:panelGrid layout="grid" columns="4"
+										columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4"
+										styleClass="ui-panelgrid-blank">
+
+										<p:outputLabel value="Nr Unik" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.event.uniqurNumber}"
+											readonly="true" />
+										<p:outputLabel value="Data Regjistrimit" />
+										<p:inputText
+											value="#{formatBean.formatDate(dfacSelectionViewBean.selection.event.eventDate)}"
+											readonly="true" />
+										<p:outputLabel value="Tipi Vendit" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.event.placeType.tag}"
+											readonly="true" />
+										<p:outputLabel value="Vendi" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.event.place}"
+											readonly="true" />
+											<p:outputLabel value="Përshkrimi" />
+										<p:inputTextarea
+											value="#{dfacSelectionViewBean.selection.event.description}"
+											readonly="true" />
+
+									</p:panelGrid>
+
+									<p:dataTable value="#{dfacSelectionViewBean.eventOfficers}"
+										var="eo" 
+										rendered="#{not empty dfacSelectionViewBean.eventOfficers}">
+										<p:column headerText="Oficeri Raportues"
+											style="text-align:left">#{eo.name} #{eo.surname}</p:column>
+										<p:column headerText="Grada" style="text-align:left">#{eo.grade}</p:column>
+										<p:column headerText="Organizata" style="text-align:left">#{eo.organization}</p:column>
+									</p:dataTable>
+
+									<p:dataTable value="#{dfacSelectionViewBean.eventEvidences}"
+										var="ee" 
+										rendered="#{not empty dfacSelectionViewBean.eventEvidences}">
+										<p:column headerText="Emri Provës" style="text-align:left">#{ee.name}</p:column>
+										<p:column headerText="Përshkrimi" style="text-align:left">#{ee.description}</p:column>
+									</p:dataTable>
+
+
+								</p:tab>
+								<p:tab title="Përzgjedhja">
+
+									<p:panelGrid layout="grid" columns="4"
+										columnClasses="bold,empty,bold,empty"
+										styleClass="ui-panelgrid-blank">
+										<p:outputLabel value="Marrësi" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.handed.tag}"
+											readonly="true" />
+										<p:outputLabel value="Data" />
+										<p:inputText
+											value="#{formatBean.formatTimestamp(dfacSelectionViewBean.selection.selectionDate)}"
+											readonly="true" />
+										<p:outputLabel value="Përkthyesi" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.translator}"
+											readonly="true" />
+										<p:outputLabel value="Gjuha" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.transLang}"
+											readonly="true" />
+										<p:outputLabel value="Intervistuesi" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.interviewer}"
+											readonly="true" />
+										<p:outputLabel value="Shënime" />
+										<p:inputTextarea
+											value="#{dfacSelectionViewBean.selection.notes}"
+											readonly="true" />
+
+									</p:panelGrid>
+
+									<p:panelGrid layout="grid" columns="2"
+										columnClasses="ui-g-12 ui-md-3 bold,ui-g-12 ui-md-9 empty"
+										styleClass="ui-panelgrid-blank">
+
+										<p:outputLabel value="Deklarimi i Statusit të parregullt" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.irStatus.tag}"
+											readonly="true" />
+										<p:outputLabel value="Person në nevojë" />
+										<p:inputText value="#{formatBean.formatYN(dfacSelectionViewBean.selection.asylantDetails.inNeed)}" readonly="true"/>
+										<p:outputLabel value="Kërkesat e personit" />
+										<p:inputText value="#{dfacSelectionViewBean.selection.asylantDetails.needs}" readonly="true"/>
+										<p:outputLabel value="Person me të ardhura" />
+										<p:inputText value="#{formatBean.formatYN(dfacSelectionViewBean.selection.asylantDetails.withIncomes)}" readonly="true"/>
+										<p:outputLabel value="Të ardhurat e personit" />
+										<p:inputText value="#{dfacSelectionViewBean.selection.asylantDetails.incomes}" readonly="true"/>
+										<p:outputLabel value="Minoren i pashoqëruar" />
+										<p:inputText value="#{formatBean.formatYN(dfacSelectionViewBean.selection.asylantDetails.unaccompainedChild)}" readonly="true"/>
+										<p:outputLabel value="Adresa në Shqipëri" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.albAddress}"
+											readonly="true" />
+										<p:outputLabel value="Vendi i hyrjes" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.entryPlace}"
+											readonly="true" />
+										<p:outputLabel value="Mënyra e kalimit të kufirit" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.entryMode}"
+											readonly="true" />
+										<p:outputLabel value="Itinerari" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.itinerary}"
+											readonly="true" />
+										<p:outputLabel value="Arsyet e largimit" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.selection.fleeingReason}"
+											readonly="true" />
+
+									</p:panelGrid>
+
+
+
+								</p:tab>
+								<p:tab title="Dokumenti udhëtimit">
+									<h:panelGroup
+										rendered="#{dfacSelectionViewBean.document == null}">
+										<h3 style="color: #FF1300; font-weight: bold">Nuk ka
+											dokument udhëtimi</h3>
+									</h:panelGroup>
+									<p:panelGrid layout="grid" columns="6"
+										rendered="#{dfacSelectionViewBean.document != null}"
+										columnClasses="bold,empty,bold,empty,bold,empty"
+										styleClass="ui-panelgrid-blank">
+										<p:outputLabel value="Nr Dokumentit" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.document.travelDocNo}"
+											readonly="true" />
+										<p:outputLabel value="Tipi" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.document.codeTypeTravelDoc}"
+											readonly="true" />
+										<p:outputLabel value="Shteti" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.document.codeState}"
+											readonly="true" />
+
+										<p:outputLabel value="Data lëshimit" />
+										<p:inputText
+											value="#{formatBean.formatDate(dfacSelectionViewBean.document.dateOfIssue)}"
+											readonly="true" />
+										<p:outputLabel value="Data Skadimit" />
+										<p:inputText
+											value="#{formatBean.formatDate(dfacSelectionViewBean.document.dateOfExpiration)}"
+											readonly="true" />
+										<p:outputLabel value="Data shtyrjes" />
+										<p:inputText
+											value="#{formatBean.formatDate(dfacSelectionViewBean.document.dateOfExtension)}"
+											readonly="true" />
+
+									</p:panelGrid>
+
+									<p:dataTable value="#{dfacSelectionViewBean.otherDocuments}"
+										var="od"
+										rendered="#{not empty dfacSelectionViewBean.otherDocuments}"
+										emptyMessage="Nuk ka dokumeta te tjere" styleClass="no-border">
+										<p:column headerText="Numri Dokumentit tjetër"
+											style="text-align:left">
+									#{od.documentNo}
+								</p:column>
+										<p:column headerText="Shteti" style="text-align:left">
+									#{od.state}
+								</p:column>
+										<p:column headerText="Tipi Dokumentit" style="text-align:left">
+									#{od.docType}
+								</p:column>
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="Vendimet DRKM">
+
+									<h:panelGroup
+										rendered="#{empty dfacSelectionViewBean.decisions}">
+										<h3 style="color: #FF1300; font-weight: bold">Nuk ka
+											vendime</h3>
+									</h:panelGroup>
+
+									<p:repeat var="dd" value="#{dfacSelectionViewBean.decisions}">
+									<p:panel header="#{dd.decisionType.tag}">
+										<p:panelGrid layout="grid" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4"
+											styleClass="ui-panelgrid-blank">
+
+											<p:outputLabel value="Tipi vendimit" styleClass="bold" />
+											<p:inputText value="#{dd.decisionType.tag}" readonly="true" />
+											<p:outputLabel value="Nr Vendimit" styleClass="bold" />
+											<p:inputText value="#{dd.orderNumber}" readonly="true" />
+											<p:outputLabel value="Arsyeja" styleClass="bold" />
+											<p:inputText value="#{dd.decisionReason.tag}" readonly="true" />
+											<p:outputLabel value="Data vendimit" styleClass="bold" />
+											<p:inputText value="#{formatBean.formatDate(dd.orderDate)}"
+												readonly="true" />
+											<p:outputLabel value="Largimi nga Territori"
+												styleClass="bold"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+												<p:inputText value="#{dd.dayRemoval}" readonly="true"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+											<p:outputLabel value="Neni" styleClass="bold"
+												rendered="#{dd.decisionType.id == constB.DETENTION_ORDER}" />
+											<p:inputText value="#{dd.article}" readonly="true"
+												rendered="#{dd.decisionType.id == constB.DETENTION_ORDER}" />
+												<p:outputLabel value="PKK Daljes" styleClass="bold"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+											<p:inputText value="#{dd.borderCrossingPoint}"
+												readonly="true"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+											<p:outputLabel value="Data Ndalimit hyrjes" styleClass="bold"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+											<p:inputText
+												value="#{formatBean.formatDate(dd.datePermitEntrance)}"
+												readonly="true"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+
+											
+											
+
+										</p:panelGrid>
+									   </p:panel>
+									</p:repeat>
+
+
+								</p:tab>
+
+							</p:tabView>
+
+						</div>
+
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+								<h1 style="font-weight: bold">Feedback</h1>
+								<div class="ui-g">
+									<div class="ui-g-12 ">
+										<h:panelGroup
+											>
+											<h3 style="color: #FF1300; font-weight: bold">Feedback-u
+												nuk është dhënë akoma!</h3>
+										</h:panelGroup>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+								<h1 style="font-weight: bold">Transferimet</h1>
+								<div class="ui-g">
+									<div class="ui-g-12 ">
+									    <h:panelGroup rendered="#{empty dfacSelectionViewBean.transfers}">
+											<h3 style="color: #FF1300; font-weight: bold">Nuk ka Transferime</h3>
+											<h2>Vendodhja aktuale #{dfacSelectionViewBean.selection.event.organization.tag}</h2>
+										</h:panelGroup>
+										<p:dataTable value="#{dfacSelectionViewBean.transfers}" var="t" 
+										rendered="#{not empty dfacSelectionViewBean.transfers}" rowIndexVar="r">
+										
+										<p:column headerText="#">
+										    #{r+1}
+										</p:column>
+										<p:column headerText="Ora">
+										    #{formatBean.formatTimestamp(t.checkOutTime)}
+										</p:column>
+										<p:column headerText="Nisur nga">
+										    #{t.fromOrganization.tag}
+										</p:column>
+										<p:column headerText="Drejt">
+										    #{t.toOrganization.tag}
+										</p:column>
+										<p:column headerText="Ora mbërritjes">
+										    #{formatBean.formatTimestamp(t.checkInTime)}
+										</p:column>
+										<p:column headerText="Statusi">
+										    #{t.transferStatus.tag}
+										</p:column>
+										
+										
+										
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+								<h1 style="font-weight: bold">Intervistat</h1>
+								<div class="ui-g">
+									<div class="ui-g-12 ">
+									    <h:panelGroup rendered="#{empty dfacSelectionViewBean.interviews}">
+											<h3 style="color: #FF1300; font-weight: bold">Nuk ka Intervista</h3>											
+										</h:panelGroup>
+										<p:tabView value="#{dfacSelectionViewBean.interviews}" var="i" rendered="#{not empty dfacSelectionViewBean.interviews}">
+											<p:tab title="Intervista - #{i.interviewStatus.tag}">
+												<div class="ui-g">
+												<div class="ui-g-12">
+												<p:panelGrid columns="4" layout="grid"
+													styleClass="ui-panelgrid-blank">
+
+													<p:outputLabel value="Data selektimit" styleClass="bold" />
+													<p:inputText
+														value="#{formatBean.formatTimestamp(i.selectionTime)}"
+														readonly="true" />
+													<p:outputLabel value="Selektuesi" styleClass="bold" />
+													<p:inputText value="#{i.selectionUser}" readonly="true" />
+													<p:outputLabel value="Data paracaktuar" styleClass="bold" />
+													<p:inputText value="#{formatBean.formatDate(i.predictedInterviewDate)}" readonly="true" />
+													<p:outputLabel value="Statusi" styleClass="bold" />
+													<p:inputText value="#{i.interviewStatus.tag}"
+														readonly="true" />
+														
+													<p:outputLabel value="Data intervistimit" styleClass="bold" />
+													<p:inputText
+														value="#{formatBean.formatTimestamp(i.interviewTime)}"
+														readonly="true" />
+													<p:outputLabel value="Intervistuesi" styleClass="bold" />
+													<p:inputText value="#{i.interviewer}" readonly="true" />
+													<p:outputLabel value="Përkthyesi" styleClass="bold" />
+													<p:inputText value="#{i.translator}" readonly="true" />
+													<p:outputLabel value="Gjuha" styleClass="bold" />
+													<p:inputText value="#{i.language}" readonly="true" />
+													
+													<p:outputLabel value="Shënime" styleClass="bold" />
+													<p:inputTextarea value="#{i.notes}" readonly="true" />
+
+												</p:panelGrid>
+												
+												</div>
+									
+												</div>
+											</p:tab>
+										</p:tabView>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+								<h1 style="font-weight: bold">Dëgjimet</h1>
+								<div class="ui-g">
+									<div class="ui-g-12 ">
+								    	<h:panelGroup rendered="#{empty dfacSelectionViewBean.hearings}">
+											<h3 style="color: #FF1300; font-weight: bold">Nuk ka Dëgjesa</h3>											
+										</h:panelGroup>
+										<p:tabView value="#{dfacSelectionViewBean.hearings}" var="h" rendered="#{not empty dfacSelectionViewBean.hearings}">
+											<p:tab title="Dëgjesa - #{h.hearingStatus.tag}">
+
+												<p:panelGrid columns="4" layout="grid"
+													styleClass="ui-panelgrid-blank">
+
+													<p:outputLabel value="Data selektimit" styleClass="bold" />
+													<p:inputText
+														value="#{formatBean.formatTimestamp(h.selectionTime)}"
+														readonly="true" />
+													<p:outputLabel value="Selektuesi" styleClass="bold" />
+													<p:inputText value="#{i.selectionUser}" readonly="true" />
+													
+													<p:outputLabel value="Data paracaktuar" styleClass="bold" />
+													<p:inputText
+														value="#{formatBean.formatDate(h.predictedHearingDate)}"
+														readonly="true" />
+													<p:outputLabel value="Statusi" styleClass="bold" />													
+													<p:inputText value="#{h.hearingStatus.tag}" readonly="true" />
+													
+													<p:outputLabel value="Data intervistimit" styleClass="bold" />
+													<p:inputText
+														value="#{formatBean.formatTimestamp(h.hearingTime)}"
+														readonly="true" />
+													<p:outputLabel value="Dëgjuesi" styleClass="bold" />
+													<p:inputText value="#{h.listener}" readonly="true" />
+
+													<p:outputLabel value="Përkthyesi" styleClass="bold" />
+													<p:inputText value="#{h.translator}" readonly="true" />
+													<p:outputLabel value="Gjuha" styleClass="bold" />
+													<p:inputText value="#{h.language}" readonly="true" />
+													
+													<p:outputLabel value="Shënime" styleClass="bold" />
+													<p:inputTextarea value="#{h.notes}" readonly="true" />
+
+												</p:panelGrid>
+											</p:tab>
+										</p:tabView>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+								<h1 style="font-weight: bold">Vendimet</h1>
+								<div class="ui-g">
+									<div class="ui-g-12 ">
+
+
+										<h:panelGroup
+											rendered="#{empty dfacSelectionViewBean.asylumDecisions}">
+											<h3 style="color: #FF1300; font-weight: bold">Nuk ka
+												vendime</h3>
+										</h:panelGroup>
+
+										<p:repeat var="dd"
+											value="#{dfacSelectionViewBean.asylumDecisions}">
+											<p:panel header="[ #{dd.orderNo} - #{formatBean.formatDate(dd.orderDate)} ] - #{dd.newStatus.tag} (#{dd.newStage.tag})">
+											<p:panelGrid layout="grid" columns="4"
+												styleClass="ui-panelgrid-blank">
+
+												<p:outputLabel value="Tipi vendimit" styleClass="bold" />
+												<p:inputText value="#{dd.decisionType.tag}" readonly="true" />
+												<p:outputLabel value="Nr Vendimit" styleClass="bold" />
+												<p:inputText value="#{dd.orderNo}" readonly="true" />
+												<p:outputLabel value="Data vendimit" styleClass="bold" />
+												<p:inputText value="#{formatBean.formatDate(dd.orderDate)}"
+													readonly="true" />
+												<p:outputLabel value="Regjistruesi" styleClass="bold" />
+												<p:inputText value="#{dd.decisionUser}" readonly="true" />
+
+												<p:outputLabel value="Statusi Vjetër" styleClass="bold" />
+												<p:inputText value="#{dd.oldStatus.tag}" readonly="true" />
+												<p:outputLabel value="Faza" styleClass="bold" />
+												<p:inputText value="#{dd.oldStage.tag}" readonly="true" />
+												<p:outputLabel value="Statusi Ri" styleClass="bold" />
+												<p:inputText value="#{dd.newStatus.tag}" readonly="true" />
+												<p:outputLabel value="Faza" styleClass="bold" />
+												<p:inputText value="#{dd.newStage.tag}" readonly="true" />
+												<p:outputLabel value="Shënime" styleClass="bold" />
+												<p:inputTextarea value="#{dd.notes}" readonly="true" />
+
+											</p:panelGrid>
+											</p:panel>
+										</p:repeat>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+								<h1 style="font-weight: bold">Ankimimet</h1>
+								<div class="ui-g">
+									<div class="ui-g-12 ">
+									<h:panelGroup
+											rendered="#{empty dfacSelectionViewBean.appeals}">
+											<h3 style="color: #FF1300; font-weight: bold">Nuk ka
+												Ankimime</h3>
+									</h:panelGroup>
+										<p:repeat value="#{dfacSelectionViewBean.appeals}"
+											var="app" >
+											
+											<p:panel header="#{app.decisionNo} - #{formatBean.formatDate(app.decisionDate)}">
+												<p:panelGrid layout="grid" columns="4"
+												styleClass="ui-panelgrid-blank">
+													<p:outputLabel value="Nr Vendimi" styleClass="bold" />
+													<p:inputText value="#{app.decisionNo}" readonly="true" />
+													<p:outputLabel value="Datë Vendimi" styleClass="bold" />
+													<p:inputText value="#{formatBean.formatDate(app.decisionDate)}" readonly="true" />
+													<p:outputLabel value="Regjistruesi" styleClass="bold" />
+													<p:inputText value="#{app.appealUser}" readonly="true" />
+													<p:outputLabel value="Datë regjistrimi" styleClass="bold" />
+													<p:inputText value="#{formatBean.formatTimestamp(app.appealTime)}" readonly="true" />	
+													<p:outputLabel value="Shënime" styleClass="bold" />
+													<p:inputTextarea value="#{app.notes}" readonly="true" />											
+												</p:panelGrid>
+											
+											</p:panel>																						
+										</p:repeat>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui-g-12">
+							<div class="card card-w-title">
+								<h1 style="font-weight: bold">Opinionet nga Institucionet</h1>
+								<div class="ui-g">
+									<div class="ui-g-12 ">
+									<h:panelGroup
+											rendered="#{empty dfacSelectionViewBean.opinions}">
+											<h3 style="color: #FF1300; font-weight: bold">Nuk ka
+												Opinione</h3>
+									</h:panelGroup>
+										<p:repeat value="#{dfacSelectionViewBean.opinions}"
+											var="op" >
+											
+											<p:panel header="#{op.institution}">
+												<p:panelGrid layout="grid" columns="2"
+												columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4"
+												styleClass="ui-panelgrid-blank">
+													<p:outputLabel value="Datë regjistrimi" styleClass="bold" />
+													<p:inputText value="#{formatBean.formatTimestamp(op.opinionTime)}" readonly="true" />
+													<p:outputLabel value="Regjistruesi" styleClass="bold" />
+													<p:inputText value="#{op.opinionUser}" readonly="true" />
+													<p:outputLabel value="Institucioni" styleClass="bold" />
+													<p:inputText value="#{op.institution}" readonly="true" />
+													<p:outputLabel value="Shënime" styleClass="bold" />
+													<p:inputTextarea value="#{op.notes}" readonly="true" />												
+												</p:panelGrid>
+											
+											</p:panel>																						
+										</p:repeat>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui-g-12">
+
+							<p:tabView>
+								<p:tab title="Gjendja Civile">
+								</p:tab>
+								<p:tab title="Zyra e Punës">
+								</p:tab>
+								<p:tab title="Kartë Shëndeti">
+								</p:tab>
+								<p:tab title="Punësimi">
+								</p:tab>
+								<p:tab title="Ndihme ekonomike">
+								</p:tab>
+								<p:tab title="Leje Qendrimi">
+								</p:tab>
+							</p:tabView>
+
+						</div>
+
+					</div>
+				</div>
+
+
+
+			</div>
+		</h:panelGroup>
+	</h:form>
+
+
+
+	
+
+</ui:composition>

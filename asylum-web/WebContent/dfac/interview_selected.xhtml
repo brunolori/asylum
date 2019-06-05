@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="dfac_selected_interview_form">
+
+		<div class="ui-g ui-fluid">
+				
+				
+				<div class="ui-g-12">
+				<p:dataTable value="#{dfacInterviewSelectedBean.interviews}"
+					rendered="#{not empty dfacInterviewSelectedBean.interviews}" var="i" styleClass="no-border"
+					rowIndexVar="r" 
+					paginator="true" 
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					    currentPageReportTemplate="(Shfaqur: {startRecord} - {endRecord} nga {totalRecords}, Faqja: {currentPage}/{totalPages})"
+						paginatorAlwaysVisible="false" rows="20"
+						rowsPerPageTemplate="5,10,20,30,50" reflow="true"
+					    rowKey="#{i.id}" 
+					>
+				
+				<f:facet name="header">Të përzgjedhur për Intervistë</f:facet>
+
+				<p:column headerText="#" style="text-align: left">
+                    #{r+1}
+                </p:column>
+				<p:column headerText="Nr Unik" sortBy="#{i.selection.event.uniqurNumber}" style="text-align: left">
+                    #{i.selection.event.uniqurNumber}
+                </p:column>
+                <p:column headerText="Intervista" sortBy="#{i.predictedInterviewDate}" style="text-align: left">
+                   <p:outputLabel styleClass="bold" value="#{formatBean.formatDate(i.predictedInterviewDate)}" />
+                </p:column>
+                <p:column headerText="Foto" style="text-align: left">
+					<p:graphicImage value="#{photoBean.bioImg}" width="50px">
+					<f:param name="event_id" value="#{i.selection.event.id}"/>
+					</p:graphicImage>
+				</p:column>
+                <p:column headerText="Emri plotë" sortBy="#{i.selection.person.name}" style="text-align: left">
+                   <p:commandLink value="#{i.selection.person.name} #{i.selection.person.surname}" action="#{dfacInterviewSelectedBean.onSelectionSelect(i)}" update=":main"/>
+                </p:column>
+                <p:column headerText="Dtl" sortBy="#{i.selection.person.dob}" style="text-align: left">
+               		#{formatBean.formatDate(i.selection.person.dob)}
+                </p:column>   
+                <p:column headerText="Gj" sortBy="#{i.selection.person.gender}" style="text-align: left">
+               		#{i.selection.person.gender}
+                </p:column>   
+                <p:column headerText="Shteti" sortBy="#{i.selection.person.codeNationality}" style="text-align: left">
+               		#{i.selection.person.codeNationality}
+                </p:column> 
+                <p:column headerText="Data përzgjedhjes" sortBy="#{i.selectionTime}" style="text-align: left">
+                    #{formatBean.formatTimestamp(i.selectionTime)}
+                </p:column>         
+				<p:column headerText="Përdoruesi" sortBy="#{i.selectionUser}" style="text-align: left">
+					#{i.selectionUser}
+				</p:column>
+				<p:column>
+					<p:commandButton icon="fa fa-pencil-square-o" action="#{dfacInterviewSelectedBean.onInterviewSelect(i)}" update=":interview_dlg"
+									 styleClass="orange-btn" title="Shiko detajet"
+					                 oncomplete="PF('interviewWid').show();"/>
+				</p:column>
+                
+
+				</p:dataTable>
+			</div>				
+				
+			</div>
+
+	</h:form>
+	
+	
+	<p:dialog header="Detajet e Intervistës" id="interview_dlg"
+		widgetVar="interviewWid" modal="true" responsive="true"
+		closeOnEscape="true" style="max-width: 60%">
+
+		<h:form id="dfac_interview_view_form">
+	
+	
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12 ui-md-3">
+						<p:graphicImage value="#{photoBean.bioImg}" width="95%">
+					           <f:param name="event_id" value="#{dfacInterviewSelectedBean.selectedInterview.selection.event.id}"/>
+					    </p:graphicImage>						
+					</div>			
+					<div class="ui-g-12 ui-md-9">
+					
+						<p:panelGrid layout="grid" columns="4" styleClass="ui-panelgrid-blank" columnClasses="bold,empty,bold,empty">
+							<p:outputLabel value="Emri"/>
+							<p:inputText value="#{dfacInterviewSelectedBean.selectedInterview.selection.person.name}" readonly="true"/>
+							<p:outputLabel value="Mbiemri"/>
+							<p:inputText value="#{dfacInterviewSelectedBean.selectedInterview.selection.person.surname}" readonly="true"/>
+							<p:outputLabel value="Datëlindja"/>
+							<p:inputText value="#{formatBean.formatDate(dfacInterviewSelectedBean.selectedInterview.selection.person.dob)}" readonly="true"/>
+							<p:outputLabel value="Shtetësia"/>
+							<p:inputText value="#{dfacInterviewSelectedBean.selectedInterview.selection.person.codeNationality}" readonly="true"/>
+							<p:outputLabel value="Data Përzgjedhjes"/>
+							<p:inputText value="#{formatBean.formatTimestamp(dfacInterviewSelectedBean.selectedInterview.selectionTime)}" readonly="true"/>
+							<p:outputLabel value="Përdoruesi"/>
+							<p:inputText value="#{dfacInterviewSelectedBean.selectedInterview.selectionUser}" readonly="true"/>
+							<p:outputLabel value="Data Paracaktuar"/>
+							<p:inputText value="#{formatBean.formatDate(dfacInterviewSelectedBean.selectedInterview.predictedInterviewDate)}" readonly="true"/>
+							<p:outputLabel value="Shënime"/>
+							<p:inputTextarea value="#{dfacInterviewSelectedBean.selectedInterview.selectionNotes}" readonly="true"/>
+						</p:panelGrid>
+					
+					</div>		
+				</div>
+	
+		
+		</h:form>
+
+	</p:dialog>
+	
+	
+	
+	
+	
+	
+
+</ui:composition>

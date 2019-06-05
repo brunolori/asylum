@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<h:form id="dfac_selection_view_interview_select_form">
+		
+		
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<p:messages showDetail="true" closable="true" >
+				   <p:autoUpdate/>
+				</p:messages>
+			</div>
+			<div class="ui-g-12">
+			
+				<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-12 ui-md-4 bold, ui-g-12 ui-md-8 empty" styleClass="ui-panelgrid-blank">
+					<p:outputLabel value="Data Intervistimit"/>
+					<p:calendar pattern="dd.MM.yyyy" value="#{dfacSelectionViewBean.interview.predictedInterviewDate}" placeholder="Data Intervistës"/>
+					<p:outputLabel value="Shënime"/>
+					<p:inputTextarea value="#{dfacSelectionViewBean.interview.selectionNotes}" placeholder="Shënime"/>
+									
+				</p:panelGrid>
+			
+			</div>		
+			<div class="ui-g-12">
+				<p:panelGrid layout="grid" columns="2" styleClass="ui-panelgrid-blank">
+				 <p:commandButton value="Regjistro" action="#{dfacSelectionViewBean.registerSelectForInterview()}" styleClass="green-btn" >
+				 	<p:confirm header="Regjistro" message="Jeni të sigurt?" />
+				 </p:commandButton>
+				 <p:commandButton value="Anullo" oncomplete="PF('selectInterviewWid').hide();"  />
+				</p:panelGrid>
+			</div>
+		</div>
+		
+		
+		
+	</h:form>
+
+
+</ui:composition>

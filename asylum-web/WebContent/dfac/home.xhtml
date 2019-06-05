@@ -1,0 +1,402 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="dfac_home_form">
+
+		<script type="text/javascript">
+		
+        function skinChart() {
+            this.cfg.shadow = false;
+            this.cfg.title = '';
+            this.cfg.seriesColors = ['#ed3c76', '#f6ac2b', '#7e8dcd', '#39b8b6'];
+            this.cfg.grid = {
+                background: '#ffffff',
+                borderColor: '#ffffff',
+                gridLineColor: '#dce2e7',
+                shadow: false
+            };
+            this.cfg.axesDefaults = {
+                borderWidth: 0.1,
+                borderColor: 'bdc3c9',
+                rendererOptions: {
+                    textColor: '#757575'
+                }
+            };
+            this.cfg.seriesDefaults = {
+                shadow: false,
+                lineWidth: 1,
+                pointLabels: {
+                    show: true,
+                    formatString: '%d'
+                 },
+                markerOptions: {
+                    shadow: false,
+                    size: 7,
+                    style: 'circle'
+                }
+            };
+        }
+
+        function skinBar() {
+            this.cfg.shadow = false;
+            this.cfg.title = '';
+            this.cfg.seriesColors = ['#00796B','#3984b8'];
+            this.cfg.grid = {
+                background: '#ffffff',
+                borderColor: '#ffffff',
+                gridLineColor: '#dce2e7',
+                shadow: false
+            };
+            this.cfg.axesDefaults = {
+                borderWidth: 0.1,
+                borderColor: 'bdc3c9',
+                rendererOptions: {
+                    textColor: '#757575'
+                }
+            };
+            this.cfg.seriesDefaults = {
+                shadow: false,
+                lineWidth: 1,
+                renderer: $.jqplot.BarRenderer,
+                pointLabels: {
+                    show: true,
+                    formatString: '%d'
+                 },
+                markerOptions: {
+                    shadow: false,
+                    size: 7,
+                    style: 'circle'
+                }
+            }
+        }
+
+        function skinArea() {
+            this.cfg.shadow = false;
+            this.cfg.title = '';
+            this.cfg.seriesColors = ['#3984b8', '#39b8b6'];
+            this.cfg.grid = {
+                background: '#ffffff',
+                borderColor: '#ffffff',
+                gridLineColor: '#dce2e7',
+                shadow: false
+            };
+            this.cfg.axesDefaults = {
+                borderWidth: 0.1,
+                borderColor: 'bdc3c9',
+                rendererOptions: {
+                    textColor: '#757575'
+                }
+            };
+            this.cfg.seriesDefaults = {
+                shadow: false,
+                lineWidth: 1,
+                markerOptions: {
+                    shadow: false,
+                    size: 7,
+                    style: 'circle'
+                }
+            }
+        }
+
+        
+       
+        function skinPie() {
+            this.cfg.shadow = false;
+            this.cfg.title = '';
+            this.cfg.seriesColors = ['#42A5F5','#7E57C2','#FFB300','#66BB6A','#ed3c76','#E64A19', '#00796B', '#7e8dcd', '#39b8b6'];
+            this.cfg.grid = {
+                background: '#ffffff',
+                borderColor: '#ffffff',
+                gridLineColor: '#dce2e7',
+                shadow: false
+            };
+            this.cfg.axesDefaults = {
+                rendererOptions: {
+                    textColor: '#757575',
+                }
+            };
+            this.cfg.seriesDefaults = {
+                renderer: $.jqplot.PieRenderer,
+                shadow: false,
+                lineWidth: 1,
+                markerOptions: {
+                    shadow: false,
+                    size: 7,
+                    style: 'circle'
+                }
+            }
+        }
+
+        
+       
+
+       
+      
+        </script>
+        <style type="text/css">
+            .jqplot-xaxis-label, .jqplot-yaxis-label, .jqplot-y2axis-label, .jqplot-x2axis-label {
+                color: #757575; 
+            }
+            
+            table.jqplot-table-legend {
+                background-color: #ffffff;
+                color: #757575;
+                border-color: #dce2e7;
+            }
+        </style>
+
+
+
+
+
+		<div class="ui-g dashboard" >
+			<div class="ui-g-12">
+				<div class="card ">
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-3 ui-fluid">
+
+							<p:panelGrid layout="grid" columns="2"
+								styleClass="ui-panelgrid-blank">
+								<p:outputLabel value="Nga data" styleClass="bold" />
+								<p:outputLabel value="Në datën" styleClass="bold" />
+								<p:calendar value="#{dfacDashboardBean.from}"
+									pattern="dd.MM.yyyy" navigator="true" >
+									<p:ajax event="dateSelect" listener="#{dfacDashboardBean.onDateChange()}" update="@form"/>
+								</p:calendar>
+								<p:calendar value="#{dfacDashboardBean.to}" pattern="dd.MM.yyyy"
+									navigator="true" >
+									<p:ajax event="dateSelect" listener="#{dfacDashboardBean.onDateChange()}" update="@form"/>
+								</p:calendar>
+							</p:panelGrid>
+
+						</div>
+						<div class="ui-g-12 ui-md-9 ui-fluid">
+
+							<p:panelGrid layout="grid" columns="1"
+								styleClass="ui-panelgrid-blank">
+								<p:outputLabel styleClass="bold" value="Zgjidhni periudhën ose datat sipas dëshirës"/>
+								
+								<p:selectOneRadio value="#{dfacDashboardBean.period}" columns="3">
+								
+									<p:ajax listener="#{dfacDashboardBean.onPeriodSelect()}"
+										update="@form" />
+									<f:selectItem itemLabel="#{formatBean.thisMonth()}"
+										itemValue="1" />
+									<f:selectItem itemLabel="#{formatBean.thisYear()}"
+										itemValue="2" />
+									<f:selectItem itemLabel="#{formatBean.lastMonth()}"
+										itemValue="3" />
+									<f:selectItem itemLabel="#{formatBean.lastThreeMonths()}"
+										itemValue="4" />
+									<f:selectItem itemLabel="#{formatBean.lastSixMonths()}"
+										itemValue="5" />
+									<f:selectItem itemLabel="#{formatBean.lastYear()}"
+										itemValue="6" />
+								</p:selectOneRadio>
+							</p:panelGrid>
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #42A5F5"  >
+                    <div class="overview-box-title" style="color: white">Gjithsej</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-globe overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.total}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: #42A5F5">-</div>
+                </div>
+            </div>            
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #7E57C2">
+                    <div class="overview-box-title" style="color: white">Meshkuj</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-male overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.male}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.male,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #FFB300">
+                    <div class="overview-box-title" style="color: white">Femra</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-female overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.female}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.female,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #F5F5F5">
+                    <div class="overview-box-title" >Pa gjini</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-transgender-alt overview-box-details-icon" />
+                        <span class="overview-box-details-count" >#{dfacDashboardBean.noGender}</span>
+                    </div>
+                    <div class="overview-box-stats" >#{formatBean.formatPrc(dfacDashboardBean.noGender,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #66BB6A">
+                    <div class="overview-box-title" style="color: white">Fëmijë</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-child overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.child}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.child,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+            
+            
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #ed3c76">
+                    <div class="overview-box-title" style="color: white">Fëmijë pa shoqëruar</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-ban overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.unaccompainedChild}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.unaccompainedChild,dfacDashboardBean.total)}</div>
+                </div>
+            </div>            
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #E64A19">
+                    <div class="overview-box-title" style="color: white">Përsona në nevojë</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-h-square overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.inNeed}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.inNeed,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #00796B">
+                    <div class="overview-box-title" style="color: white">Të larguar</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-sign-out overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.gone}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.gone,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #5AC8FA">
+                    <div class="overview-box-title" style="color: white">Status Refugjati</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-flag overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.refugee}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.refugee,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #FF3B30">
+                    <div class="overview-box-title" style="color: white">Mbrojtje Plotësuese</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-flag overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.extraProtection}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.extraProtection,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+			<div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #007AFF">
+                    <div class="overview-box-title" style="color: white">Mbrojtje Ndërkomëtare</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-flag overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.internationalProtection}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.internationalProtection,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+                <div class="ui-g card overview-box overview-box-1 no-gutter" style="background-color: #607D8B">
+                    <div class="overview-box-title" style="color: white">Mbrojtje Përkohëshme</div>
+                    <div class="overview-box-details">
+                        <i class="fa fa-flag overview-box-details-icon" style="color: white"/>
+                        <span class="overview-box-details-count" style="color: white">#{dfacDashboardBean.temporaryProtection}</span>
+                    </div>
+                    <div class="overview-box-stats" style="color: white">#{formatBean.formatPrc(dfacDashboardBean.temporaryProtection,dfacDashboardBean.total)}</div>
+                </div>
+            </div>
+
+			<div class="ui-g-12 ui-md-8">
+				<div class="ui-g">
+					<div class="ui-g-12 ">
+						<div class="card card-w-title">
+							<h2>Regjistrime sipas Datave</h2>
+							<div class="ui-g">
+								<div class="ui-g-12 ">
+									<p:chart type="line" model="#{dfacDashboardBean.dayModel}" responsive="true" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="ui-g-12 ">
+						<div class="card card-w-title">
+							<h2>Regjistrime sipas DRKM</h2>
+							<div class="ui-g">
+								<div class="ui-g-12 ">
+									<p:chart type="bar" model="#{dfacDashboardBean.organizationModel}" responsive="true" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="ui-g-12 ui-md-4">
+				<div class="ui-g">
+					<div class="ui-g-12 ">
+						<div class="card card-w-title">
+							<h2>Regjistrime sipas Shteteve</h2>
+							<div class="ui-g">
+								<div class="ui-g-12 ">
+									<p:chart type="pie" model="#{dfacDashboardBean.stateModel}" responsive="true" />
+								</div>
+									
+								<div class="ui-g-12 global-sales">
+					                <p:panel header="SIPAS SHTETEVE">
+					                    <div class="globe">
+					                        <p:graphicImage name="images/dashboard/globe.png" library="paradise-layout" width="45"/>
+					                    </div>
+					                    
+					                    <span class="sale-interval">#{formatBean.formatDateName(dfacDashboardBean.from)} - #{formatBean.formatDateName(dfacDashboardBean.to)}</span>
+					                    
+					                    <table>
+					                        <tbody>
+					                            
+					                            <p:repeat value="#{dfacDashboardBean.regByState}" var="r">
+					                            	<tr>
+						                                <td><p:graphicImage name="/flags/48x48/#{r.key.toLowerCase()}.png" library="images"  width="45"/></td>
+						                                <td>#{cacheBean.stateName(r.key)}</td>
+						                                <td>#{r.value}</td>
+						                                <td>#{formatBean.formatPrc(r.value,dfacDashboardBean.total)}</td>
+					                                </tr>
+					                            </p:repeat>
+					                            
+					                        </tbody>
+					                    </table>
+					                </p:panel>
+					            </div>
+									
+							</div>
+						</div>
+					</div>
+					
+				</div>
+            </div>
+            
+            
+        </div>
+
+	</h:form>
+
+</ui:composition>

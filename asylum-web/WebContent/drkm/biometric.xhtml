@@ -1,0 +1,255 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="drkm_biometric_form">
+
+		<f:event type="preRenderComponent"
+			listener="#{drkmBiometricBean.init()}" />
+
+		<h:panelGroup id="in_form">
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="card card-w-title">
+						<h3>Regjistro të dhënat Biometrike</h3>
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true">
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+
+							<div class="ui-g-12 ui-md-6">
+
+								<div class="ui-inputgroup">
+
+									<p:inputText value="#{drkmBiometricBean.uniqueNo}"
+										placeholder="Numri Unik" />
+									<p:commandButton value="Kërko" icon="fa fa-search"
+										styleClass="info-btn"
+										action="#{drkmBiometricBean.searchSelection()}"
+										update="drkm_biometric_form:in_form" />
+									<p:commandButton value="Pastro" icon="fa fa-close"
+										action="#{drkmBiometricBean.clearUniqueNo()}"
+										update="drkm_biometric_form:in_form" styleClass="red-btn" />
+								</div>
+
+							</div>
+							
+							
+							<h:panelGroup rendered="#{drkmBiometricBean.selection == null}">
+
+
+								<div class="ui-g-12">
+
+									<p:dataTable value="#{drkmBiometricBean.selections}" var="s"
+										rowIndexVar="r" selection="#{drkmBiometricBean.selectedSelection}"
+										selectionMode="single" rowKey="#{s.event.id}">
+										<f:facet name="header"> Lista e Përzgjedhjeve të fundit</f:facet>
+										<p:ajax event="rowSelect"
+											listener="#{drkmBiometricBean.onSelectionSelect()}"
+											update="drkm_biometric_form:in_form" />
+										<p:column headerText="#">
+												#{r+1}
+											</p:column>
+										<p:column headerText="Nr unik">
+												#{s.event.uniqurNumber}
+											</p:column>
+											<p:column headerText="Meri Mbiemri">
+												#{s.person.name} #{s.person.surname}
+											</p:column>
+										<p:column headerText="Data konstatimit">
+												#{formatBean.formatTimestamp(s.event.eventDate)}
+											</p:column>
+											<p:column headerText="Data Përzgjedhjes">
+												#{formatBean.formatTimestamp(s.selectionDate)}
+											</p:column>
+										<p:column headerText="Tipi Vendit">
+												#{s.event.placeType.tag}
+											</p:column>
+										<p:column headerText="Struktura">
+												#{s.event.organization.tag}
+											</p:column>
+										<p:column headerText="Përdoruesi">
+												#{s.recordUser}
+											</p:column>
+									</p:dataTable>
+
+								</div>
+							</h:panelGroup>
+							
+						</div>
+					</div>
+				</div>
+				<h:panelGroup rendered="#{drkmBiometricBean.selection != null}">
+				<div class="ui-g-12">
+									
+					<div class="ui-g">
+											
+								<div class="ui-g-12">
+									
+									<p:tabView>
+								<p:tab title="Konstatimi">
+
+									<p:panelGrid layout="grid" columns="4"
+										columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4"
+										styleClass="ui-panelgrid-blank">
+
+										<p:outputLabel value="Nr Unik" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.event.uniqurNumber}"
+											readonly="true" />
+										<p:outputLabel value="Data Regjistrimit" />
+										<p:inputText
+											value="#{formatBean.formatDate(drkmBiometricBean.selection.event.eventDate)}"
+											readonly="true" />
+										<p:outputLabel value="Tipi Vendit" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.event.placeType.tag}"
+											readonly="true" />
+										<p:outputLabel value="Vendi" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.event.place}"
+											readonly="true" />
+											<p:outputLabel value="Përshkrimi" />
+										<p:inputTextarea
+											value="#{drkmBiometricBean.selection.event.description}"
+											readonly="true" />
+
+									</p:panelGrid>
+
+									<p:dataTable value="#{drkmBiometricBean.eventOfficers}"
+										var="eo" 
+										rendered="#{not empty drkmBiometricBean.eventOfficers}">
+										<p:column headerText="Oficeri Raportues"
+											style="text-align:left">#{eo.name} #{eo.surname}</p:column>
+										<p:column headerText="Grada" style="text-align:left">#{eo.grade}</p:column>
+										<p:column headerText="Organizata" style="text-align:left">#{eo.organization}</p:column>
+									</p:dataTable>
+
+									<p:dataTable value="#{drkmBiometricBean.eventEvidences}"
+										var="ee" 
+										rendered="#{not empty drkmBiometricBean.eventEvidences}">
+										<p:column headerText="Emri Provës" style="text-align:left">#{ee.name}</p:column>
+										<p:column headerText="Përshkrimi" style="text-align:left">#{ee.description}</p:column>
+									</p:dataTable>
+
+
+								</p:tab>
+								<p:tab title="Përzgjedhja">
+
+									<p:panelGrid layout="grid" columns="4"
+										columnClasses="bold,empty,bold,empty"
+										styleClass="ui-panelgrid-blank">
+										<p:outputLabel value="Marrësi" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.handed.tag}"
+											readonly="true" />
+										<p:outputLabel value="Data" />
+										<p:inputText
+											value="#{formatBean.formatTimestamp(drkmBiometricBean.selection.selectionDate)}"
+											readonly="true" />
+										<p:outputLabel value="Përkthyesi" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.translator}"
+											readonly="true" />
+										<p:outputLabel value="Gjuha" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.transLang}"
+											readonly="true" />
+										<p:outputLabel value="Intervistuesi" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.interviewer}"
+											readonly="true" />
+										<p:outputLabel value="Shënime" />
+										<p:inputTextarea
+											value="#{drkmBiometricBean.selection.notes}"
+											readonly="true" />
+
+									</p:panelGrid>
+
+									<p:panelGrid layout="grid" columns="2"
+										columnClasses="ui-g-12 ui-md-3 bold,ui-g-12 ui-md-9 empty"
+										styleClass="ui-panelgrid-blank">
+
+										<p:outputLabel value="Deklarimi i Statusit të parregullt" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.irStatus.tag}"
+											readonly="true" />
+										<p:outputLabel value="Person në nevojë" />
+										<p:inputText value="#{formatBean.formatYN(drkmBiometricBean.selection.asylantDetails.inNeed)}" readonly="true"/>
+										<p:outputLabel value="Kërkesat e personit" />
+										<p:inputText value="#{drkmBiometricBean.selection.asylantDetails.needs}" readonly="true"/>
+										<p:outputLabel value="Person me të ardhura" />
+										<p:inputText value="#{formatBean.formatYN(drkmBiometricBean.selection.asylantDetails.withIncomes)}" readonly="true"/>
+										<p:outputLabel value="Të ardhurat e personit" />
+										<p:inputText value="#{drkmBiometricBean.selection.asylantDetails.incomes}" readonly="true"/>
+										<p:outputLabel value="Minoren i pashoqëruar" />
+										<p:inputText value="#{formatBean.formatYN(drkmBiometricBean.selection.asylantDetails.unaccompainedChild)}" readonly="true"/>
+										<p:outputLabel value="Adresa në Shqipëri" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.albAddress}"
+											readonly="true" />
+										<p:outputLabel value="Vendi i hyrjes" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.entryPlace}"
+											readonly="true" />
+										<p:outputLabel value="Mënyra e kalimit të kufirit" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.entryMode}"
+											readonly="true" />
+										<p:outputLabel value="Itinerari" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.itinerary}"
+											readonly="true" />
+										<p:outputLabel value="Arsyet e largimit" />
+										<p:inputText
+											value="#{drkmBiometricBean.selection.fleeingReason}"
+											readonly="true" />
+
+									</p:panelGrid>
+
+
+
+								</p:tab>
+									</p:tabView>
+								</div>
+								
+								
+								<div class="ui-g-12">
+								
+									<div class="card card-w-title">
+										<div class="ui-g">
+											<div class="ui-g-12">
+												<p:fileUpload fileUploadListener="#{drkmBiometricBean.handleFileUpload}" mode="advanced"
+               								   update="drkm_biometric_form:in_form"  allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+               								   cancelLabel="Anullo" invalidFileMessage="Tipi i file-s nuk eshte i pershtatshem"
+               								   label="Ngarko" uploadLabel="Regjistro" previewWidth="300" auto="true"
+               								    />
+											</div>
+										</div>
+									</div>
+									
+								</div>
+								
+								
+												
+					</div>
+					
+					</div>
+				
+				
+				</h:panelGroup>
+				
+				
+				
+				
+				</div>
+				</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

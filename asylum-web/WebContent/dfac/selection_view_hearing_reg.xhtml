@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<h:form id="dfac_selection_view_hearing_form">
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<p:messages showDetail="true" closable="true" >
+					<p:autoUpdate/>
+				</p:messages>
+			</div>
+			<div class="ui-g-12">
+			
+				<p:panelGrid layout="grid" columns="6" columnClasses="bold,empty,bold,empty,bold,empty" styleClass="ui-panelgrid-blank">
+				
+				<p:outputLabel value="Selektuesi"/>
+				<p:inputText value="#{dfacSelectionViewBean.hearing.selectionUser}" readonly="true"/>
+				<p:outputLabel value="Data Selektimit"/>
+				<p:inputText value="#{formatBean.formatTimestamp(dfacSelectionViewBean.hearing.selectionTime)}" readonly="true"/>
+				<p:outputLabel />
+				<p:outputLabel />
+					
+					<p:outputLabel value="Dëgjuesi"/>
+					<p:inputText value="#{dfacSelectionViewBean.hearing.listener}" placeholder="Dëgjuesi"/>
+					<p:outputLabel value="Përkthyesi"/>
+					<p:inputText value="#{dfacSelectionViewBean.hearing.translator}" placeholder="Përkthyesi"/>
+					<p:outputLabel value="Gjuha"/>
+					<p:inputText value="#{dfacSelectionViewBean.hearing.language}" placeholder="Gjuha"/>
+									
+				</p:panelGrid>
+				<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-12 ui-md-2 bold, ui-g-12 ui-md-10 empty" styleClass="ui-panelgrid-blank">
+					<p:outputLabel value="Shënime"/>
+					<p:inputTextarea value="#{dfacSelectionViewBean.hearing.notes}" placeholder="Shënime"/>
+				</p:panelGrid>
+			
+			</div>		
+			<div class="ui-g-12">
+				<p:panelGrid layout="grid" columns="2" styleClass="ui-panelgrid-blank">
+				 <p:commandButton value="Regjistro" action="#{dfacSelectionViewBean.registerHearing()}" styleClass="green-btn" >
+				 	<p:confirm header="Regjistro Dëgjesën" message="Jeni të sigurt?" />
+				 </p:commandButton>
+				 <p:commandButton value="Anullo" oncomplete="PF('hearingWid').hide();"  />
+				</p:panelGrid>
+			</div>
+		</div>
+	</h:form>
+
+
+</ui:composition>

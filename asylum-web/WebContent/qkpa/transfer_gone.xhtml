@@ -1,0 +1,110 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="qkpa_transfer_gone_form">
+
+		<div class="ui-g ui-fluid">
+		
+		
+		<div class="ui-g-12">
+					<div class="card card-w-title" style="background-color: #F5F5F5">
+						<h1>Të larguar</h1>
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:panelGrid layout="grid" columns="4"
+									styleClass="ui-panelgrid-blank form-group">
+									
+									<p:calendar pattern="dd.MM.yyyy" value="#{qkpaTransferGoneBean.req.fromCheckOutTime}" placeholder="Nga data"/>
+									<p:calendar pattern="dd.MM.yyyy" value="#{qkpaTransferGoneBean.req.toCheckOutTime}" placeholder="Në datën"/>
+									<p:inputText value="#{qkpaTransferGoneBean.req.name}" placeholder="Emri" />
+									<p:inputText value="#{qkpaTransferGoneBean.req.surname}" placeholder="Mbiemri"/>	
+																								
+								</p:panelGrid>
+							</div>
+							<div class="ui-g-12 ui-md-4">
+								<p:panelGrid layout="grid" columns="2"
+									styleClass="ui-panelgrid-blank">
+									<p:commandButton value="Kërko" update="@form" styleClass="blue-btn"
+										action="#{qkpaTransferGoneBean.search()}" icon="ui-icon-search" />
+										<p:commandButton value="Pastro" update="@form"
+										action="#{qkpaTransferGoneBean.clear()}" icon="ui-icon-trash" 
+										styleClass="green-btn"/>
+								</p:panelGrid>
+							</div>
+
+							<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true" >
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+							
+						</div>
+					</div>
+			</div>
+		
+		
+		
+			<div class="ui-g-12">
+				<p:dataTable value="#{qkpaTransferGoneBean.transfers}"
+				    rendered="#{not empty qkpaTransferGoneBean.transfers}"
+					var="t" styleClass="no-border"
+					rowIndexVar="r" paginator="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					currentPageReportTemplate="(Shfaqur: {startRecord} - {endRecord} nga {totalRecords}, Faqja: {currentPage}/{totalPages})"
+					paginatorAlwaysVisible="false" rows="20"
+					rowsPerPageTemplate="5,10,20,30,50" reflow="true" rowKey="#{t.id}"
+					emptyMessage="Nuk ka të larguar">
+
+				<p:column headerText="#" style="text-align: left">
+                    #{r+1}
+                </p:column>
+					<p:column headerText="Nr Unik" sortBy="#{t.selection.event.uniqurNumber}" style="text-align: left">
+                    #{t.selection.event.uniqurNumber}
+                </p:column>
+				<p:column headerText="Foto" style="text-align: left">
+						<p:graphicImage value="#{photoBean.bioImg}" width="50px">
+							<f:param name="event_id" value="#{t.selection.event.id}" />
+						</p:graphicImage>
+				</p:column>
+				<p:column headerText="Emri plotë"
+						sortBy="#{t.selection.person.name}" style="text-align: left">
+						<p:commandLink
+							value="#{t.selection.person.name} #{t.selection.person.surname}"
+							action="#{qkpaTransferGoneBean.onSelectionSelect(t)}"
+							update=":main" />
+				</p:column>
+				<p:column headerText="Dtl" sortBy="#{t.selection.person.dob}" style="text-align: left">
+               		#{formatBean.formatDate(t.selection.person.dob)}
+                </p:column>
+				<p:column headerText="Gj" sortBy="#{t.selection.person.gender}" style="text-align: left">
+               		#{t.selection.person.gender}
+                </p:column>
+				<p:column headerText="Shteti"
+						sortBy="#{t.selection.person.codeNationality}" style="text-align: left">
+               		#{t.selection.person.codeNationality}
+                </p:column>
+				<p:column headerText="Data largimit" sortBy="#{t.checkOutTime}" style="text-align: left">
+              	    #{formatBean.formatTimestamp(t.checkOutTime)} 
+                </p:column>
+				<p:column headerText="Vendi"
+						sortBy="#{t.fromOrganization.tag}" style="text-align: left">
+              	    #{t.fromOrganization.tag}
+                </p:column>
+				
+
+				</p:dataTable>
+			</div>
+
+
+
+
+
+		</div>
+
+	</h:form>
+
+</ui:composition>

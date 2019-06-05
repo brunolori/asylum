@@ -1,0 +1,168 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="drkm_selection_sx_form">
+
+		<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="card card-w-title">
+						<h1>Kërko të parregullt</h1>
+						<div class="ui-g">
+							<div class="ui-g-12">
+
+								<p:panelGrid layout="grid" columns="4"
+									styleClass="ui-panelgrid-blank form-group">
+
+									<p:inputText placeholder="Nr Unik"
+										value="#{drkmSelectionSearchBean.req.uniqueNo}" />
+									<p:inputText placeholder="Emri"
+										value="#{drkmSelectionSearchBean.req.name}" />
+									<p:inputText placeholder="Mbiemri"
+										value="#{drkmSelectionSearchBean.req.surname}" />
+									<p:selectOneMenu placeholder="Gjinia" autoWidth="false"
+										value="#{drkmSelectionSearchBean.req.gender}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Gjinia"/>
+										<f:selectItem itemValue="M" itemLabel="Mashkull"/>
+										<f:selectItem itemValue="F" itemLabel="Femër"/>
+									</p:selectOneMenu>
+									
+									<p:calendar pattern="dd.MM.yyyy" placeholder="Datëlindja"
+									    	value="#{drkmSelectionSearchBean.req.dob}" />
+								     <p:inputNumber value="#{drkmSelectionSearchBean.req.fromAge}" 
+								            placeholder="Nga mosha" decimalPlaces="0"/>
+								     <p:inputNumber value="#{drkmSelectionSearchBean.req.toAge}" 
+								            placeholder="Në moshën" decimalPlaces="0"/>
+								      <p:inputText placeholder="Nr dokumenti"
+										value="#{drkmSelectionSearchBean.req.docNo}" />
+										
+									<p:selectOneMenu placeholder="Statusi" autoWidth="false"
+										value="#{drkmSelectionSearchBean.req.irStatusCode}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Statusi"/>
+										<f:selectItems value="#{cacheBean.irStatuses}" var="ist" itemValue="#{ist.id}" itemLabel="#{ist.tag}"/>
+									</p:selectOneMenu>									
+									<p:autoComplete placeholder="Shtetësia" autoWidth="false" 
+										value="#{drkmSelectionSearchBean.req.nationalityCode}" 
+										var="state" itemValue="#{state.code}" itemLabel="#{state}"
+										completeMethod="#{cacheBean.searchState}"/>																	
+									<p:selectOneMenu placeholder="Marrësi" autoWidth="false"
+									            value="#{drkmSelectionSearchBean.req.handedOverId}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Marrësi"/>
+										<f:selectItems value="#{drkmSelectionSearchBean.handedOvers}" var="ho" itemValue="#{ho.id}" itemLabel="#{ho.tag}"/>
+									</p:selectOneMenu>
+									<p:selectOneMenu placeholder="Organizata" autoWidth="false"  
+									             value="#{drkmSelectionSearchBean.req.organizationId}">
+										<f:selectItem itemValue="#{null}" itemLabel="Organizata"/>
+										<f:selectItems value="#{drkmSelectionSearchBean.organizations}" var="o" itemValue="#{o.id}" itemLabel="#{o.tag}"/>
+									</p:selectOneMenu>			
+									
+									<p:calendar pattern="dd.MM.yyyy" placeholder="Nga Data"
+										value="#{drkmSelectionSearchBean.req.fromDate}" />
+									<p:calendar pattern="dd.MM.yyyy" placeholder="Në Datën"
+										value="#{drkmSelectionSearchBean.req.toDate}" />									 									     
+									<p:selectOneMenu placeholder="Rikthyer" autoWidth="false" 
+									value="#{drkmSelectionSearchBean.req.returned}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Rikthyer"/>
+										<f:selectItem itemValue="Y" itemLabel="PO"/>
+										<f:selectItem itemValue="N" itemLabel="JO"/>
+									</p:selectOneMenu>
+													
+									
+
+
+								</p:panelGrid>
+
+
+							</div>
+
+							<div class="ui-g-12 ui-md-4">
+								<p:panelGrid layout="grid" columns="2"
+									styleClass="ui-panelgrid-blank">
+									<p:commandButton value="Kërko" update="@form" styleClass="blue-btn"
+										action="#{drkmSelectionSearchBean.search()}" icon="ui-icon-search" />
+										<p:commandButton value="Pastro" update="@form"
+										action="#{drkmSelectionSearchBean.clear()}" icon="ui-icon-trash" 
+										styleClass="green-btn"/>
+								</p:panelGrid>
+							</div>
+
+							<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true" >
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				
+				<div class="ui-g-12">
+				<p:dataTable value="#{drkmSelectionSearchBean.selections}" styleClass="no-border"
+					rendered="#{not empty drkmSelectionSearchBean.selections}" var="s"
+					rowIndexVar="r" 
+					paginator="true" 
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					    currentPageReportTemplate="(Shfaqur: {startRecord} - {endRecord} nga {totalRecords}, Faqja: {currentPage}/{totalPages})"
+						paginatorAlwaysVisible="false" rows="20"
+						rowsPerPageTemplate="5,10,20,30,50" reflow="true"
+					    rowKey="#{s.event.id}" selection="#{drkmSelectionSearchBeanselectedSelection}" selectionMode="single"
+					>
+				
+				<f:facet name="header">Lista e të parregulltëve</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{drkmSelectionSearchBean.onSelectionSelect()}" update=":main"/>
+
+				<p:column headerText="#" style="text-align: left">
+                    #{r+1}
+                </p:column>
+				<p:column headerText="Nr Unik" style="text-align: left">
+                    #{s.event.uniqurNumber}
+                </p:column>
+                <p:column headerText="Foto" style="text-align: left">
+					<p:graphicImage value="#{photoBean.bioImg}" width="50px">
+					<f:param name="event_id" value="#{s.event.id}"/>
+					</p:graphicImage>
+				</p:column>
+                <p:column headerText="Emri" sortBy="#{s.person.name}" style="text-align: left">
+                   #{s.person.name}
+                </p:column>
+                <p:column headerText="Mbiemri" sortBy="#{s.person.surname}" style="text-align: left">
+                    #{s.person.surname}
+                </p:column> 
+                <p:column headerText="Dtl" sortBy="#{s.person.dob}" style="text-align: left">
+               		#{formatBean.formatDate(s.person.dob)}
+                </p:column>   
+                <p:column headerText="Gj" sortBy="#{s.person.gender}" style="text-align: left">
+               		#{s.person.gender}
+                </p:column>   
+                <p:column headerText="Shteti" sortBy="#{s.person.codeNationality}" style="text-align: left">
+               		#{s.person.codeNationality}
+                </p:column> 
+                <p:column headerText="Data regjistrimit" sortBy="#{s.recordDate}" style="text-align: left">
+                    #{formatBean.formatTimestamp(s.recordDate)}
+                </p:column>         
+				<p:column headerText="Përdoruesi" sortBy="#{s.recordUser}" style="text-align: left">
+					#{s.recordUser}
+				</p:column>
+				<p:column headerText="Statusi" sortBy="#{s.irStatus.tag}" style="text-align: left">
+                    #{s.irStatus.tag}
+                </p:column>
+                <p:column headerText="Marrësi" sortBy="#{s.handed.tag}" style="text-align: left">
+                    #{s.handed.tag}
+                </p:column>
+				
+				</p:dataTable>
+			</div>
+				
+				
+				
+				
+				
+			</div>
+
+	</h:form>
+
+</ui:composition>

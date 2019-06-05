@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="drkm_transfer_form">
+
+		
+
+			<div class="ui-g ui-fluid">	
+						
+				<div class="ui-g-12">
+					<p:messages showDetail="true" closable="true">
+								<p:autoUpdate />
+					</p:messages>
+				</div>
+							
+				<div class="ui-g-12 ui-md-6">
+					<div class="card card-w-title">
+					<h2>PËRZGJIDH PËR TRANSFERIM</h2>
+						<div class="ui-g">
+								<div class="ui-g-12">
+									<p:dataTable>
+									  <p:column headerText="#">
+									  
+									  </p:column>
+									  <p:column headerText="Nr Unik">
+									  
+									  </p:column>
+									  <p:column headerText="Foto">
+									  
+									  </p:column>
+									  <p:column headerText="Emri Plotë">
+									  
+									  </p:column>
+									  <p:column headerText="Shteti">
+									  
+									  </p:column>
+									
+									</p:dataTable>
+								</div>
+						</div>
+					</div>				
+				</div>		
+				<div class="ui-g-12 ui-md-6">
+					<div class="card card-w-title">
+					<h2>TË PËRZGJEDHUR</h2>
+						<div class="ui-g">
+								<div class="ui-g-12">
+									<p:dataTable>
+									  <p:column headerText="#">
+									  
+									  </p:column>
+									  <p:column headerText="Nr Unik">
+									  
+									  </p:column>
+									  <p:column headerText="Foto">
+									  
+									  </p:column>
+									  <p:column headerText="Emri Plotë">
+									  
+									  </p:column>
+									  <p:column headerText="Shteti">
+									  
+									  </p:column>
+									
+									</p:dataTable>
+								</div>
+								<div class="ui-g-12">
+									<p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" >
+									    <p:outputLabel value="Destinacioni"/>
+									    <p:inputText value="QKPA" readonly="true"/>
+									    <p:outputLabel value="Shënime"/>
+									    <p:inputTextarea value="#{null}" placeholder="Shënime"/>
+									</p:panelGrid>
+								</div>
+								<div class="ui-g-12">
+								</div>
+						</div>
+				  </div>					
+								
+			</div>	
+			
+				
+			</div>		
+
+	</h:form>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+</ui:composition>

@@ -1,0 +1,167 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="dfac_heared_form">
+
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+					<div class="card card-w-title" style="background-color: #F5F5F5">
+						<h1>Kërko dëgjimet</h1>
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:panelGrid layout="grid" columns="4"
+									styleClass="ui-panelgrid-blank form-group">
+									
+									<p:calendar pattern="dd.MM.yyyy" value="#{dfacHearedBean.req.from}" placeholder="Nga data"/>
+									<p:calendar pattern="dd.MM.yyyy" value="#{dfacHearedBean.req.to}" placeholder="Në datën"/>
+									<p:inputText value="#{dfacHearedBean.req.name}" placeholder="Emri" />
+									<p:inputText value="#{dfacHearedBean.req.surname}" placeholder="Mbiemri"/>									
+								</p:panelGrid>
+							</div>
+							<div class="ui-g-12 ui-md-4">
+								<p:panelGrid layout="grid" columns="2"
+									styleClass="ui-panelgrid-blank">
+									<p:commandButton value="Kërko" update="@form" styleClass="blue-btn"
+										action="#{dfacHearedBean.search()}" icon="ui-icon-search" />
+										<p:commandButton value="Pastro" update="@form"
+										action="#{dfacHearedBean.clear()}" icon="ui-icon-trash" 
+										styleClass="green-btn"/>
+								</p:panelGrid>
+							</div>
+
+							<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true" >
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+							
+						</div>
+					</div>
+			</div>
+				
+				<div class="ui-g-12">
+				<p:dataTable value="#{dfacHearedBean.hearings}" styleClass="no-border"
+					rendered="#{not empty dfacHearedBean.hearings}" var="h"
+					rowIndexVar="r" 
+					paginator="true" 
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					    currentPageReportTemplate="(Shfaqur: {startRecord} - {endRecord} nga {totalRecords}, Faqja: {currentPage}/{totalPages})"
+						paginatorAlwaysVisible="false" rows="20"
+						rowsPerPageTemplate="5,10,20,30,50" reflow="true"
+					    rowKey="#{i.id}" 
+					>
+				
+				<p:column headerText="#" style="text-align: left">
+                    #{r+1}
+                </p:column>
+				<p:column headerText="Nr Unik" style="text-align: left">
+                    #{h.selection.event.uniqurNumber}
+                </p:column>               
+                <p:column headerText="Foto" style="text-align: left">
+					<p:graphicImage value="#{photoBean.bioImg}" width="50px" >
+					<f:param name="event_id" value="#{h.selection.event.id}" />
+					</p:graphicImage>
+				</p:column>
+                <p:column headerText="Emri plotë" sortBy="#{h.selection.person.name}" style="text-align: left">
+                   <p:commandLink value="#{h.selection.person.name} #{h.selection.person.surname}" action="#{dfacHearedBean.onSelectionSelect(h)}" update=":main"/>
+                </p:column>
+                <p:column headerText="Dtl" sortBy="#{h.selection.person.dob}" style="text-align: left">
+               		#{formatBean.formatDate(h.selection.person.dob)}
+                </p:column>   
+                <p:column headerText="Gj" sortBy="#{h.selection.person.gender}" style="text-align: left">
+               		#{h.selection.person.gender}
+                </p:column>   
+                <p:column headerText="Shteti" sortBy="#{h.selection.person.codeNationality}" style="text-align: left">
+               		#{h.selection.person.codeNationality}
+                </p:column> 
+                <p:column headerText="Data Dëgjimit" sortBy="#{h.hearingTime}" style="text-align: left">
+              	    #{formatBean.formatTimestamp(h.hearingTime)} 
+                </p:column>         
+				<p:column headerText="Dëgjuesi" sortBy="#{h.listener}" style="text-align: left">
+					#{h.listener}
+				</p:column>
+				<p:column headerText="Përkthyesi" sortBy="#{h.translator}" style="text-align: left">
+					#{h.translator}
+				</p:column>
+				<p:column headerText="Gjuha" sortBy="#{h.language}" style="text-align: left">
+					#{h.language}
+				</p:column>
+				<p:column>
+					<p:commandButton icon="fa fa-pencil-square-o" action="#{dfacHearedBean.onHearingSelect(h)}" update=":hearing_dlg"
+									 styleClass="green-btn" title="Shiko detajet"
+					                 oncomplete="PF('hearingWid').show();"/>
+				</p:column>
+                
+
+				</p:dataTable>
+			</div>
+				
+			</div>
+
+	</h:form>
+	
+	
+	<p:dialog header="Detajet e Dëgjimit" id="hearing_dlg"
+		widgetVar="hearingWid" modal="true" responsive="true"
+		closeOnEscape="true" style="max-width: 60%">
+
+		<h:form id="dfac_hearing_view_form">
+	
+	
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12 ui-md-3">
+						<p:graphicImage value="#{photoBean.bioImg}" width="95%">
+					           <f:param name="event_id" value="#{dfacHearedBean.selectedHearing.selection.event.id}"/>
+					    </p:graphicImage>						
+					</div>			
+					<div class="ui-g-12 ui-md-9">
+					
+						<p:panelGrid layout="grid" columns="4" styleClass="ui-panelgrid-blank" columnClasses="bold,empty,bold,empty">
+							<p:outputLabel value="Emri"/>
+							<p:inputText value="#{dfacHearedBean.selectedHearing.selection.person.name}" readonly="true"/>
+							<p:outputLabel value="Mbiemri"/>
+							<p:inputText value="#{dfacHearedBean.selectedHearing.selection.person.surname}" readonly="true"/>
+							<p:outputLabel value="Datëlindja"/>
+							<p:inputText value="#{formatBean.formatDate(dfacHearedBean.selectedHearing.selection.person.dob)}" readonly="true"/>
+							<p:outputLabel value="Shtetësia"/>
+							<p:inputText value="#{dfacHearedBean.selectedHearing.selection.person.codeNationality}" readonly="true"/>
+							<p:outputLabel value="Data Përzgjedhjes"/>
+							<p:inputText value="#{formatBean.formatTimestamp(dfacHearedBean.selectedHearing.selectionTime)}" readonly="true"/>
+							<p:outputLabel value="Përdoruesi"/>
+							<p:inputText value="#{dfacHearedBean.selectedHearing.selectionUser}" readonly="true"/>
+							<p:outputLabel value="Data Paracaktuar"/>
+							<p:inputText value="#{formatBean.formatDate(dfacHearedBean.selectedHearing.predictedHearingDate)}" readonly="true"/>
+							<p:outputLabel value="Shënime"/>
+							<p:inputTextarea value="#{dfacHearedBean.selectedHearing.selectionNotes}" readonly="true"/>
+							
+							
+							<p:outputLabel value="Data Dëgjimit"/>
+							<p:inputText value="#{formatBean.formatDate(dfacHearedBean.selectedHearing.hearingTime)}" readonly="true"/>
+							<p:outputLabel value="Dëgjuesi"/>
+							<p:inputText value="#{dfacHearedBean.selectedHearing.listener}" readonly="true"/>
+							<p:outputLabel value="Përkthyesi"/>
+							<p:inputText value="#{dfacHearedBean.selectedHearing.translator}" readonly="true"/>
+							<p:outputLabel value="Gjuha"/>
+							<p:inputText value="#{dfacHearedBean.selectedHearing.language}" readonly="true"/>
+							<p:outputLabel value="Shënime"/>
+							<p:inputTextarea value="#{dfacHearedBean.selectedHearing.notes}" readonly="true"/>
+							
+							
+						</p:panelGrid>
+					
+					</div>		
+				</div>
+	
+		
+		</h:form>
+
+	</p:dialog>
+	
+	
+	
+
+</ui:composition>

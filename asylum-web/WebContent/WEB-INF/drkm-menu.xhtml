@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pv="http://primefaces.org/paradise">
+
+	<div
+		class="layout-menu-wrapper #{guestPreferences.darkMenu ? 'layout-menu-dark' : null}">
+		<div class="nano">
+			<div class="nano-content sidebar-scroll-content">
+				<div class="layout-menu-container">
+					<h:form id="menuform">
+						<pv:menu>
+
+							<p:menuitem id="drkm_dashboard" value="Dashboard"
+									icon="fa fa-fw fa-dashboard"
+									action="#{menuBean.navigate('home','drkm')}" />
+							<p:submenu id="drkm_register" label="Regjistrime"
+								icon="fa fa-floppy-o">
+								<p:menuitem id="drkm_event" value="Konstatim"
+									icon="fa fa-eye"
+									action="#{menuBean.navigate('event','drkm')}" />
+								<p:menuitem id="drkm_selection" value="Përzgjedhja"
+									icon="fa fa-check"
+									action="#{menuBean.navigate('selection','drkm')}" />
+								<p:menuitem id="drkm_biometrics" value="Biometrike"
+									icon="fa fa-picture-o"
+									action="#{menuBean.navigate('biometric','drkm')}" />
+								<p:menuitem id="drkm_decisions" value="Urdhërat"
+									icon="fa fa-sticky-note-o"
+									action="#{menuBean.navigate('decision','drkm')}" />
+							</p:submenu>
+
+							<p:menuitem id="drkm_aliens" value="Kërko të parregullt"
+									icon="fa fa-search"
+									action="#{menuBean.navigate('selection_sx','drkm')}" />
+									
+							<p:submenu id="drkm_asylum" label="Azilantët"
+								       icon="fa fa-users">
+								<p:menuitem id="drkm_feedback" value="Feedback"
+									icon="fa fa-fw fa-dashboard"
+									action="#{menuBean.navigate('feedback','drkm')}"/>
+								<p:menuitem id="drkm_check_out" value="Transfero"
+									icon="fa fa-sign-out"
+									action="#{menuBean.navigate('transfer_reg2','drkm')}" />
+								<p:menuitem id="drkm_transfer" value="Lista transferimeve"
+									icon="fa fa-exchange"
+									action="#{menuBean.navigate('transfer','drkm')}" />
+								
+						    </p:submenu>
+								
+						</pv:menu>
+					</h:form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</ui:composition>

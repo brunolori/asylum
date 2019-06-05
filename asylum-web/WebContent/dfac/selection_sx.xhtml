@@ -1,0 +1,184 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="dfac_selection_sx_form">
+
+		<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="card card-w-title" style="background-color: #F5F5F5">
+						<h1>Kërko të përzgjedhurit</h1>
+						<div class="ui-g">
+							<div class="ui-g-12">
+
+								<p:panelGrid layout="grid" columns="4"
+									styleClass="ui-panelgrid-blank form-group">
+
+									<p:inputText placeholder="Nr Unik"
+										value="#{dfacSelectionBean.req.uniqueNo}" />
+									<p:inputText placeholder="Emri"
+										value="#{dfacSelectionBean.req.name}" />
+									<p:inputText placeholder="Mbiemri"
+										value="#{dfacSelectionBean.req.surname}" />
+									<p:calendar pattern="dd.MM.yyyy" placeholder="Datëlindja"
+										value="#{dfacSelectionBean.req.dob}" />
+										
+									<p:selectOneMenu placeholder="Gjinia" autoWidth="false"
+										value="#{dfacSelectionBean.req.gender}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Gjinia"/>
+										<f:selectItem itemValue="M" itemLabel="Mashkull"/>
+										<f:selectItem itemValue="F" itemLabel="Femër"/>
+									</p:selectOneMenu>
+									<p:autoComplete placeholder="Shtetësia" autoWidth="false" 
+										value="#{dfacSelectionBean.req.nationalityCode}" 
+										var="state" itemValue="#{state.code}" itemLabel="#{state}"
+										completeMethod="#{cacheBean.searchState}"/>
+								     <p:inputNumber value="#{dfacSelectionBean.req.fromAge}" placeholder="Nga mosha" decimalPlaces="0"/>
+								     <p:inputNumber value="#{dfacSelectionBean.req.toAge}" placeholder="Në moshën" decimalPlaces="0"/>
+									
+									
+									<p:selectOneMenu placeholder="Statusi Azilantit" autoWidth="false"
+										value="#{dfacSelectionBean.req.asylantStatusId}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Statusi Azilantit"/>
+										<f:selectItems value="#{dfacSelectionBean.asylantStatuses}" var="ast" itemValue="#{ast.id}" itemLabel="#{ast.tag}"/>
+									</p:selectOneMenu>
+									<p:selectOneMenu placeholder="Faza Statusit" autoWidth="false"
+										value="#{dfacSelectionBean.req.asylantStageId}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Faza Statusit"/>
+										<f:selectItems value="#{dfacSelectionBean.asylantStages}" var="asg" itemValue="#{asg.id}" itemLabel="#{asg.tag}"/>
+									</p:selectOneMenu>
+									<p:selectOneMenu placeholder="Në nevojë" autoWidth="false"
+										value="#{dfacSelectionBean.req.inNeed}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Në nevojë"/>
+										<f:selectItem itemValue="Y" itemLabel="Po"/>
+										<f:selectItem itemValue="N" itemLabel="Jo"/>
+									</p:selectOneMenu>								
+									<p:selectOneMenu placeholder="Fëmijë pa shoqëruar" autoWidth="false"
+										value="#{dfacSelectionBean.req.unaccompainedChild}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Fëmijë pa shoqëruar"/>
+										<f:selectItem itemValue="Y" itemLabel="Po"/>
+										<f:selectItem itemValue="N" itemLabel="Jo"/>
+									</p:selectOneMenu>	
+									
+									<p:calendar pattern="dd.MM.yyyy" placeholder="Nga Data"
+										value="#{dfacSelectionBean.req.fromDate}" />
+									<p:calendar pattern="dd.MM.yyyy" placeholder="Në Datën"
+										value="#{dfacSelectionBean.req.toDate}" />
+																
+									<p:selectOneMenu  placeholder="I rikthyer" autoWidth="false"
+										>
+										<f:selectItem itemValue="#{null}" itemLabel="I rikthyer"/>
+										<f:selectItem itemValue="Y" itemLabel="Po"/>
+										<f:selectItem itemValue="N" itemLabel="Jo"/>
+									</p:selectOneMenu>
+
+									<p:selectOneMenu  placeholder="Organizata" autoWidth="false"
+										value="#{dfacSelectionBean.req.organizationId}" >
+										<f:selectItem itemValue="#{null}" itemLabel="Organizata"/>
+										<f:selectItems value="#{dfacSelectionBean.organizations}" var="o" itemValue="#{o.id}" itemLabel="#{o.tag}"/>
+									</p:selectOneMenu>
+
+
+								</p:panelGrid>
+
+
+							</div>
+
+							<div class="ui-g-12 ui-md-4">
+								<p:panelGrid layout="grid" columns="2"
+									styleClass="ui-panelgrid-blank">
+									<p:commandButton value="Kërko" update="@form" styleClass="blue-btn"
+										action="#{dfacSelectionBean.search()}" icon="ui-icon-search" />
+										<p:commandButton value="Pastro" update="@form"
+										action="#{dfacSelectionBean.clear()}" icon="ui-icon-trash" 
+										styleClass="green-btn"/>
+								</p:panelGrid>
+							</div>
+
+							<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true" >
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				
+				<div class="ui-g-12">
+				<p:dataTable value="#{dfacSelectionBean.selections}"
+					rendered="#{not empty dfacSelectionBean.selections}" var="s"
+					rowIndexVar="r" 
+					paginator="true" 
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					    currentPageReportTemplate="(Shfaqur: {startRecord} - {endRecord} nga {totalRecords}, Faqja: {currentPage}/{totalPages})"
+						paginatorAlwaysVisible="false" rows="20"
+						rowsPerPageTemplate="5,10,20,30,50" reflow="true"
+					    rowKey="#{s.event.id}" selection="#{dfacSelectionBean.selectedSelection}" selectionMode="single"
+					>
+				
+				<f:facet name="header">Lista e të përzgjedhurve</f:facet>
+
+				<p:ajax event="rowSelect" listener="#{dfacSelectionBean.onSelectionSelect()}" update=":main"/>
+
+				<p:column headerText="#">
+                    #{r+1}
+                </p:column>
+				<p:column headerText="Nr Unik">
+                    #{s.event.uniqurNumber}
+                </p:column>
+                <p:column headerText="Foto">
+					<p:graphicImage value="#{photoBean.bioImg}" width="50px">
+					<f:param name="event_id" value="#{s.event.id}"/>
+					</p:graphicImage>
+				</p:column>
+                <p:column headerText="Emri" sortBy="#{s.person.name}">
+                   #{s.person.name}
+                </p:column>
+                <p:column headerText="Mbiemri" sortBy="#{s.person.surname}">
+                    #{s.person.surname}
+                </p:column> 
+                <p:column headerText="Dtl" sortBy="#{s.person.dob}">
+               		#{formatBean.formatDate(s.person.dob)}
+                </p:column>   
+                <p:column headerText="Gj" sortBy="#{s.person.gender}">
+               		#{s.person.gender}
+                </p:column>   
+                <p:column headerText="Shteti" sortBy="#{s.person.codeNationality}">
+               		#{s.person.codeNationality}
+                </p:column> 
+                <p:column headerText="Data regjistrimit" sortBy="#{s.recordDate}">
+                    #{formatBean.formatTimestamp(s.recordDate)}
+                </p:column>         
+				<p:column headerText="Përdoruesi" sortBy="#{s.recordUser}">
+					#{s.recordUser}
+				</p:column>
+				<p:column headerText="Organizata" sortBy="#{s.event.organization.tag}">
+                    #{s.event.organization.tag}
+                </p:column>
+                <p:column headerText="Marrësi" sortBy="#{s.handed.tag}">
+                    #{s.handed.tag}
+                </p:column>
+				<p:column headerText="Në nevojë" sortBy="#{s.asylantDetails.inNeed}">
+                    #{formatBean.formatYN(s.asylantDetails.inNeed)}
+                </p:column>
+				<p:column headerText="Fëmijë pa shoq" sortBy="#{s.asylantDetails.unaccompainedChild}">
+                    #{formatBean.formatYN(s.asylantDetails.unaccompainedChild)}
+                </p:column>
+                
+
+				</p:dataTable>
+			</div>
+				
+				
+				
+				
+				
+			</div>
+
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<h:form id="dfac_selection_view_as_decision_form">
+	
+	
+		<h:panelGroup style="width: 700px">
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<p:messages showDetail="true" closable="true"  >
+					<p:autoUpdate/>
+				</p:messages>
+			</div>
+			
+			<div class="ui-g-12">
+				<p:panelGrid layout="grid" columns="4" columnClasses="bold,empty,bold,empty" styleClass="ui-panelgrid-blank">
+				
+					<p:outputLabel value="Statusi Aktual"/>
+					<p:inputText value="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus.tag}" readonly="true"/>
+					<p:outputLabel value="Faza e Statusit"/>
+					<p:inputText value="#{dfacSelectionViewBean.selection.asylantDetails.asylantStage.tag}" readonly="true"/>
+					
+					
+					<p:outputLabel value="Nr Vendimi"/>
+					<p:inputText value="#{dfacSelectionViewBean.asylumDecision.orderNo}" placeholder="Nr vendimit"/>
+					<p:outputLabel value="Datë Vendimi"/>
+					<p:calendar pattern="dd.MM.yyyy" value="#{dfacSelectionViewBean.asylumDecision.orderDate}" placeholder="Data vendimit"/>
+					<p:outputLabel value="Statusi i Ri"/>
+					<p:selectOneMenu value="#{dfacSelectionViewBean.asylumDecision.newStatus}" autoWidth="false" converter="asylantStatusConverter">
+						<f:selectItem itemValue="#{null}" itemLabel="-zgjidh-"/>
+						<f:selectItems value="#{cacheBean.asylantStatuses}" var="as" itemValue="#{as}" itemLabel="#{as.tag}"/>
+					</p:selectOneMenu>
+					<p:outputLabel value="Faza e Statusit"/>
+					<p:selectOneMenu value="#{dfacSelectionViewBean.asylumDecision.newStage}" autoWidth="false" converter="asylantStageConverter">
+						<f:selectItem itemValue="#{null}" itemLabel="-zgjidh-"/>
+						<f:selectItems value="#{cacheBean.asylantStages}" var="ag" itemValue="#{ag}" itemLabel="#{ag.tag}"/>
+					</p:selectOneMenu>				
+				</p:panelGrid>
+				
+				<p:panelGrid layout="grid" columns="2" columnClasses="bold ui-g-12 ui-md-3,ui-g-12 ui-md-9" styleClass="ui-panelgrid-blank">
+					<p:outputLabel value="Shënime"/>
+					<p:inputText value="#{dfacSelectionViewBean.asylumDecision.notes}" placeholder="Shënime"/>
+				</p:panelGrid>
+				
+				
+			</div>
+			
+			<div class="ui-g-12">
+				<p:panelGrid layout="grid" columns="2" styleClass="ui-panelgrid-blank">
+				 <p:commandButton value="Regjistro" action="#{dfacSelectionViewBean.registerAsylumDecision()}" styleClass="green-btn" >
+				 	<p:confirm header="Regjistro Vendimin" message="Jeni të sigurt?" />
+				 </p:commandButton>
+				 <p:commandButton value="Anullo" oncomplete="PF('asDecisionWid').hide();"  />
+				</p:panelGrid>
+			</div>
+			
+		</div>
+	</h:panelGroup>
+	
+	
+		
+	</h:form>
+
+
+</ui:composition>

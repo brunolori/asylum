@@ -1,0 +1,423 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="drkm_decision_form">
+
+		<f:event type="preRenderComponent"
+			listener="#{drkmDecisionBean.init()}" />
+
+		<h:panelGroup id="in_form">
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="card card-w-title">
+						<h3>Regjistro Vendime</h3>
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true">
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+
+							<div class="ui-g-12 ui-md-6">
+
+								<div class="ui-inputgroup">
+
+									<p:inputText value="#{drkmDecisionBean.uniqueNo}"
+										placeholder="Numri Unik" />
+									<p:commandButton value="Kërko" icon="fa fa-search"
+										styleClass="info-btn"
+										action="#{drkmDeciionBean.searchSelection()}"
+										update="drkm_decision_form:in_form" />
+									<p:commandButton value="Pastro" icon="fa fa-close"
+										action="#{drkmDecisionBean.clearUniqueNo()}"
+										update="drkm_decision_form:in_form" styleClass="red-btn" />
+								</div>
+
+							</div>
+
+
+							<h:panelGroup rendered="#{drkmDecisionBean.selection == null}">
+
+
+								<div class="ui-g-12">
+
+									<p:dataTable value="#{drkmDecisionBean.selections}" var="s"
+										rowIndexVar="r"
+										selection="#{drkmDecisionBean.selectedSelection}"
+										selectionMode="single" rowKey="#{s.event.id}">
+										<f:facet name="header"> Lista e Përzgjedhjeve të fundit</f:facet>
+										<p:ajax event="rowSelect"
+											listener="#{drkmDecisionBean.onSelectionSelect()}"
+											update="drkm_decision_form:in_form" />
+										<p:column headerText="#">
+												#{r+1}
+											</p:column>
+										<p:column headerText="Nr unik">
+												#{s.event.uniqurNumber}
+											</p:column>
+										<p:column headerText="Meri Mbiemri">
+												#{s.person.name} #{s.person.surname}
+											</p:column>
+										<p:column headerText="Data konstatimit">
+												#{formatBean.formatTimestamp(s.event.eventDate)}
+											</p:column>
+										<p:column headerText="Data Përzgjedhjes">
+												#{formatBean.formatTimestamp(s.selectionDate)}
+											</p:column>
+										<p:column headerText="Tipi Vendit">
+												#{s.event.placeType.tag}
+											</p:column>
+										<p:column headerText="Struktura">
+												#{s.event.organization.tag}
+											</p:column>
+										<p:column headerText="Përdoruesi">
+												#{s.recordUser}
+											</p:column>
+									</p:dataTable>
+
+								</div>
+							</h:panelGroup>
+						</div>
+					</div>
+				</div>
+				<h:panelGroup rendered="#{drkmDecisionBean.selection != null}">
+
+
+					<div class="ui-g-12">
+
+						<p:tabView>
+							<p:tab title="Konstatimi">
+
+								<p:panelGrid layout="grid" columns="4"
+									columnClasses="ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4,ui-g-12 ui-md-2 bold,ui-g-12 ui-md-4"
+									styleClass="ui-panelgrid-blank">
+
+									<p:outputLabel value="Nr Unik" />
+									<p:inputText
+										value="#{drkmDecisionBean.selection.event.uniqurNumber}"
+										readonly="true" />
+									<p:outputLabel value="Data Regjistrimit" />
+									<p:inputText
+										value="#{formatBean.formatDate(drkmDecisionBean.selection.event.eventDate)}"
+										readonly="true" />
+									<p:outputLabel value="Tipi Vendit" />
+									<p:inputText
+										value="#{drkmDecisionBean.selection.event.placeType.tag}"
+										readonly="true" />
+									<p:outputLabel value="Vendi" />
+									<p:inputText value="#{drkmDecisionBean.selection.event.place}"
+										readonly="true" />
+									<p:outputLabel value="Përshkrimi" />
+									<p:inputTextarea
+										value="#{drkmDecisionBean.selection.event.description}"
+										readonly="true" />
+
+								</p:panelGrid>
+
+								<p:dataTable value="#{drkmDecisionBean.eventOfficers}" var="eo"
+									rendered="#{not empty drkmDecisionBean.eventOfficers}">
+									<p:column headerText="Oficeri Raportues"
+										style="text-align:left">#{eo.name} #{eo.surname}</p:column>
+									<p:column headerText="Grada" style="text-align:left">#{eo.grade}</p:column>
+									<p:column headerText="Organizata" style="text-align:left">#{eo.organization}</p:column>
+								</p:dataTable>
+
+								<p:dataTable value="#{drkmDecisionBean.eventEvidences}" var="ee"
+									rendered="#{not empty drkmDecisionBean.eventEvidences}">
+									<p:column headerText="Emri Provës" style="text-align:left">#{ee.name}</p:column>
+									<p:column headerText="Përshkrimi" style="text-align:left">#{ee.description}</p:column>
+								</p:dataTable>
+
+
+							</p:tab>
+							<p:tab title="Përzgjedhja">
+
+								<p:panelGrid layout="grid" columns="4"
+									columnClasses="bold,empty,bold,empty"
+									styleClass="ui-panelgrid-blank">
+									<p:outputLabel value="Marrësi" />
+									<p:inputText value="#{drkmDecisionBean.selection.handed.tag}"
+										readonly="true" />
+									<p:outputLabel value="Data" />
+									<p:inputText
+										value="#{formatBean.formatTimestamp(drkmDecisionBean.selection.selectionDate)}"
+										readonly="true" />
+									<p:outputLabel value="Përkthyesi" />
+									<p:inputText value="#{drkmDecisionBean.selection.translator}"
+										readonly="true" />
+									<p:outputLabel value="Gjuha" />
+									<p:inputText value="#{drkmDecisionBean.selection.transLang}"
+										readonly="true" />
+									<p:outputLabel value="Intervistuesi" />
+									<p:inputText value="#{drkmDecisionBean.selection.interviewer}"
+										readonly="true" />
+									<p:outputLabel value="Shënime" />
+									<p:inputTextarea value="#{drkmDecisionBean.selection.notes}"
+										readonly="true" />
+
+								</p:panelGrid>
+
+								<p:panelGrid layout="grid" columns="2"
+									columnClasses="ui-g-12 ui-md-3 bold,ui-g-12 ui-md-9 empty"
+									styleClass="ui-panelgrid-blank">
+
+									<p:outputLabel value="Deklarimi i Statusit të parregullt" />
+									<p:inputText value="#{drkmDecisionBean.selection.irStatus.tag}"
+										readonly="true" />
+									<p:outputLabel value="Person në nevojë" />
+									<p:inputText
+										value="#{formatBean.formatYN(drkmDecisionBean.selection.asylantDetails.inNeed)}"
+										readonly="true" />
+									<p:outputLabel value="Kërkesat e personit" />
+									<p:inputText
+										value="#{drkmDecisionBean.selection.asylantDetails.needs}"
+										readonly="true" />
+									<p:outputLabel value="Person me të ardhura" />
+									<p:inputText
+										value="#{formatBean.formatYN(drkmDecisionBean.selection.asylantDetails.withIncomes)}"
+										readonly="true" />
+									<p:outputLabel value="Të ardhurat e personit" />
+									<p:inputText
+										value="#{drkmDecisionBean.selection.asylantDetails.incomes}"
+										readonly="true" />
+									<p:outputLabel value="Minoren i pashoqëruar" />
+									<p:inputText
+										value="#{formatBean.formatYN(drkmDecisionBean.selection.asylantDetails.unaccompainedChild)}"
+										readonly="true" />
+									<p:outputLabel value="Adresa në Shqipëri" />
+									<p:inputText value="#{drkmDecisionBean.selection.albAddress}"
+										readonly="true" />
+									<p:outputLabel value="Vendi i hyrjes" />
+									<p:inputText value="#{drkmDecisionBean.selection.entryPlace}"
+										readonly="true" />
+									<p:outputLabel value="Mënyra e kalimit të kufirit" />
+									<p:inputText value="#{drkmDecisionBean.selection.entryMode}"
+										readonly="true" />
+									<p:outputLabel value="Itinerari" />
+									<p:inputText value="#{drkmDecisionBean.selection.itinerary}"
+										readonly="true" />
+									<p:outputLabel value="Arsyet e largimit" />
+									<p:inputText
+										value="#{drkmDecisionBean.selection.fleeingReason}"
+										readonly="true" />
+
+								</p:panelGrid>
+
+
+
+							</p:tab>
+							
+							<p:tab title="Dokumenti udhëtimit">
+									<h:panelGroup
+										rendered="#{dfacSelectionViewBean.document == null}">
+										<h3 style="color: #FF1300; font-weight: bold">Nuk ka
+											dokument udhëtimi</h3>
+									</h:panelGroup>
+									<p:panelGrid layout="grid" columns="6"
+										rendered="#{dfacSelectionViewBean.document != null}"
+										columnClasses="bold,empty,bold,empty,bold,empty"
+										styleClass="ui-panelgrid-blank">
+										<p:outputLabel value="Nr Dokumentit" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.document.travelDocNo}"
+											readonly="true" />
+										<p:outputLabel value="Tipi" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.document.codeTypeTravelDoc}"
+											readonly="true" />
+										<p:outputLabel value="Shteti" />
+										<p:inputText
+											value="#{dfacSelectionViewBean.document.codeState}"
+											readonly="true" />
+
+										<p:outputLabel value="Data lëshimit" />
+										<p:inputText
+											value="#{formatBean.formatDate(dfacSelectionViewBean.document.dateOfIssue)}"
+											readonly="true" />
+										<p:outputLabel value="Data Skadimit" />
+										<p:inputText
+											value="#{formatBean.formatDate(dfacSelectionViewBean.document.dateOfExpiration)}"
+											readonly="true" />
+										<p:outputLabel value="Data shtyrjes" />
+										<p:inputText
+											value="#{formatBean.formatDate(dfacSelectionViewBean.document.dateOfExtension)}"
+											readonly="true" />
+
+									</p:panelGrid>
+
+									<p:dataTable value="#{dfacSelectionViewBean.otherDocuments}"
+										var="od"
+										rendered="#{not empty dfacSelectionViewBean.otherDocuments}"
+										emptyMessage="Nuk ka dokumeta te tjere" styleClass="no-border">
+										<p:column headerText="Numri Dokumentit tjetër"
+											style="text-align:left">
+									#{od.documentNo}
+								</p:column>
+										<p:column headerText="Shteti" style="text-align:left">
+									#{od.state}
+								</p:column>
+										<p:column headerText="Tipi Dokumentit" style="text-align:left">
+									#{od.docType}
+								</p:column>
+									</p:dataTable>
+								</p:tab>
+								<p:tab title="Vendimet DRKM">
+
+									<h:panelGroup
+										rendered="#{empty dfacSelectionViewBean.decisions}">
+										<h3 style="color: #FF1300; font-weight: bold">Nuk ka
+											vendime</h3>
+									</h:panelGroup>
+
+									<p:repeat var="dd" value="#{dfacSelectionViewBean.decisions}">
+									<p:panel header="#{dd.decisionType.tag}">
+										<p:panelGrid layout="grid" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4"
+											styleClass="ui-panelgrid-blank">
+
+											<p:outputLabel value="Tipi vendimit" styleClass="bold" />
+											<p:inputText value="#{dd.decisionType.tag}" readonly="true" />
+											<p:outputLabel value="Nr Vendimit" styleClass="bold" />
+											<p:inputText value="#{dd.orderNumber}" readonly="true" />
+											<p:outputLabel value="Arsyeja" styleClass="bold" />
+											<p:inputText value="#{dd.decisionReason.tag}" readonly="true" />
+											<p:outputLabel value="Data vendimit" styleClass="bold" />
+											<p:inputText value="#{formatBean.formatDate(dd.orderDate)}"
+												readonly="true" />
+											<p:outputLabel value="Largimi nga Territori"
+												styleClass="bold"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+												<p:inputText value="#{dd.dayRemoval}" readonly="true"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+											<p:outputLabel value="Neni" styleClass="bold"
+												rendered="#{dd.decisionType.id == constB.DETENTION_ORDER}" />
+											<p:inputText value="#{dd.article}" readonly="true"
+												rendered="#{dd.decisionType.id == constB.DETENTION_ORDER}" />
+												<p:outputLabel value="PKK Daljes" styleClass="bold"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+											<p:inputText value="#{dd.borderCrossingPoint}"
+												readonly="true"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+											<p:outputLabel value="Data Ndalimit hyrjes" styleClass="bold"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+											<p:inputText
+												value="#{formatBean.formatDate(dd.datePermitEntrance)}"
+												readonly="true"
+												rendered="#{dd.decisionType.id != constB.DETENTION_ORDER}" />
+
+											
+											
+
+										</p:panelGrid>
+									   </p:panel>
+									</p:repeat>
+
+
+								</p:tab>
+							
+							
+							
+							
+						</p:tabView>
+
+					</div>
+
+
+					<div class="ui-g-12">
+
+						<div class="card card-w-title">
+							<h2>Regjistro Vendim</h2>
+							<div class="ui-g">
+
+								<div class="ui-g-12">
+									<p:panelGrid id="decision" columns="2" layout="grid"
+										styleClass="ui-panelgrid-blank"
+										columnClasses="ui-g-12 ui-md-2 bold, ui-g-12 ui-md-4">
+
+										<p:outputLabel value="Tipi i vendimit" />
+										<p:selectOneMenu
+											value="#{drkmDecisionBean.decision.decisionType}"
+											converter="decisionTypeConverter" autoWidth="false">
+											<p:ajax listener="#{drkmDecisionBean.onDecisionTypeSelect()}"
+												update="decision" />
+											<f:selectItem itemValue="#{null}" itemLabel="Tipi vendimit" />
+											<f:selectItems value="#{drkmDecisionBean.decisionTypes}"
+												var="dt" itemValue="#{dt}" itemLabel="#{dt.tag}" />
+										</p:selectOneMenu>
+										<p:outputLabel value="Numeri vendimit" />
+										<p:inputText value="#{drkmDecisionBean.decision.orderNumber}" />
+										<p:outputLabel value="Data vendimit" />
+										<p:calendar pattern="dd.MM.yyyy" navigator="true"
+											value="#{drkmDecisionBean.decision.orderDate}" />
+										<p:outputLabel value="Neni"
+											rendered="#{drkmDecisionBean.decision.decisionType.id == constB.DETENTION_ORDER}" />
+										<p:inputText value="#{drkmDecisionBean.decision.article}"
+											rendered="#{drkmDecisionBean.decision.decisionType.id == constB.DETENTION_ORDER}" />
+										<p:outputLabel value="Arsyeja" />
+										<p:selectOneMenu
+											value="#{drkmDecisionBean.decision.decisionReason}"
+											converter="decisionReasonConverter" autoWidth="false">
+											<f:selectItem itemValue="#{null}" itemLabel="Arsyeja" />
+											<f:selectItems value="#{drkmDecisionBean.decisionReasons}"
+												var="dr" itemValue="#{dr}" itemLabel="#{dr.tag}" />
+										</p:selectOneMenu>
+										<p:outputLabel value="Largimi nga territori (Ditë)"
+											rendered="#{drkmDecisionBean.decision.decisionType.id != constB.DETENTION_ORDER}" />
+										<p:inputText value="#{drkmDecisionBean.decision.dayRemoval}"
+											rendered="#{drkmDecisionBean.decision.decisionType.id != constB.DETENTION_ORDER}" />
+										<p:outputLabel value="PKK e daljes"
+											rendered="#{drkmDecisionBean.decision.decisionType.id != constB.DETENTION_ORDER}" />
+										<p:inputText
+											value="#{drkmDecisionBean.decision.borderCrossingPoint}"
+											rendered="#{drkmDecisionBean.decision.decisionType.id != constB.DETENTION_ORDER}" />
+										<p:outputLabel value="Data e ndalimit të hyrjes"
+											rendered="#{drkmDecisionBean.decision.decisionType.id != constB.DETENTION_ORDER}" />
+										<p:calendar pattern="dd.MM.yyyy" navigator="true"
+											value="#{drkmDecisionBean.decision.datePermitEntrance}"
+											rendered="#{drkmDecisionBean.decision.decisionType.id != constB.DETENTION_ORDER}" />
+
+									</p:panelGrid>
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+					<div class="ui-g-12">
+						<div class="card">
+							<div class="ui-g">
+								<div class="ui-g-12">
+									<p:messages showDetail="true" closable="true">
+										<p:autoUpdate />
+									</p:messages>
+								</div>
+								<div class="ui-g-12">
+									<p:panelGrid columns="4" layout="grid"
+										styleClass="ui-panelgrid-blank form-group">
+										<p:commandButton value="Regjistro" styleClass="green-btn"
+											icon="fa fa-save" action="#{drkmDecisionBean.register()}"
+											update="drkm_decision_form:in_form">
+											<p:confirm header="Regjistro" message="Jeni të sigurt?" />
+										</p:commandButton>
+										<p:commandButton value="Pastro" styleClass="red-btn"
+											icon="fa fa-trash" action="#{drkmDecisionBean.clear()}"
+											update="drkm_decision_form:in_form">
+											<p:confirm header="Pastro" message="Jeni të sigurt?" />
+										</p:commandButton>
+									</p:panelGrid>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</h:panelGroup>
+			</div>
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

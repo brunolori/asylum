@@ -1,0 +1,185 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="drkm_transfer_form">
+
+		
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="card card-w-title">
+					<h2>Transferimet</h2>
+					<div class="ui-g">
+					<div class="ui-g-12">
+							<p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank" >
+								<p:inputText value="#{drkmTransferBean.req.uniqueNo}" placeholder="Nr Unik" />
+								<p:inputText value="#{drkmTransferBean.req.name}" placeholder="Emri" />
+								<p:inputText value="#{drkmTransferBean.req.surname}" placeholder="Mbiemri" />
+								<p:selectOneMenu value="#{drkmTransferBean.req.transferStatusId}"  >
+									<f:selectItem itemValue="#{null}" itemLabel="Statusi"/>
+									<f:selectItems value="#{drkmTransferBean.transferStatuses}" var="ts" itemValue="#{ts.id}" itemLabel="#{ts.tag}" />
+								</p:selectOneMenu>
+								<p:calendar pattern="dd.MM.yyyy" value="#{drkmTransferBean.req.fromCheckOutTime}"
+								 placeholder="Nga data" />
+								 <p:calendar pattern="dd.MM.yyyy" value="#{drkmTransferBean.req.toCheckOutTime}"
+								 placeholder="Në datë" />
+							</p:panelGrid>
+					</div>
+					<div class="ui-g-12">
+							<p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank" >
+							<p:commandButton value="Kërko" action="#{drkmTransferBean.search()}" 
+											  icon="fa fa-search"
+							                  update="drkm_transfer_form"/>
+							 <p:commandButton value="Pastro" action="#{drkmTransferBean.clear()}" styleClass="green-btn"
+						                      icon="fa fa-trash"
+							                  update="drkm_transfer_form"/>
+							</p:panelGrid>
+					</div>
+					<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true">
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+					</div>
+					
+					</div>
+			</div>
+						
+							
+								
+							<div class="ui-g-12">
+								<p:dataTable value="#{drkmTransferBean.transfers}" var="t" rowIndexVar="r" paginator="true" rows="20"
+								rowsPerPageTemplate="10,20,30,50" paginatorAlwaysVisible="false" styleClass="no-border"
+								rowKey="#{t.id}" selection="#{drkmTransferBean.selectedTransfer}" selectionMode="single"
+								emptyMessage="Nuk ka transferime">
+								
+								<p:ajax event="rowSelect" 
+								update="@form :transfer_form" oncomplete="PF('trans_dlg_wid').show();"/>
+																
+								
+								<p:column headerText="#" style="text-align: left">
+								#{r+1}
+								</p:column>
+								<p:column headerText="Nr unik" style="text-align: left">
+								#{t.selection.event.uniqurNumber}
+								</p:column>
+								<p:column headerText="Foto" style="text-align: left">
+									<p:graphicImage value="#{photoBean.bioImg}" width="50px">
+									<f:param name="event_id" value="#{t.selection.event.id}"/>
+									</p:graphicImage>
+								</p:column>
+								<p:column headerText="Emri Mbiemri" style="text-align: left">
+								<p:commandLink
+							value="#{t.selection.person.name} #{t.selection.person.surname}"
+							action="#{drkmTransferBean.onSelectionSelect(t)}"
+							update=":main" />
+								</p:column>
+								<p:column headerText="Check-Out" style="text-align: left">
+								#{formatBean.formatTimestamp(t.checkOutTime)}
+								</p:column>
+								<p:column headerText="Check-Out user" style="text-align: left">
+								#{t.checkOutUser}
+								</p:column>
+								<p:column headerText="Check-In" style="text-align: left">
+								#{formatBean.formatTimestamp(t.checkInTime)}
+								</p:column>
+								<p:column headerText="Check-In user" style="text-align: left">
+								#{t.checkInUser}
+								</p:column>
+								<p:column headerText="Statusi" style="text-align: left">
+								#{t.transferStatus.tag}
+								</p:column>
+								</p:dataTable>
+							</div>
+
+
+						</div>     
+
+	</h:form>
+	
+	
+	
+	<p:dialog header="Detajet e transferimit" id="transfer_dlg" widgetVar="trans_dlg_wid" closable="true" modal="true" width="80%" responsive="true">
+	
+	<h:form id="transfer_form">
+	
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12 ui-md-2">
+				<p:graphicImage value="#{photoBean.bioImg}" width="98%">
+					<f:param value="#{drkmTransferBean.selectedTransfer.selection.event.id}" name="event_id"/>
+				</p:graphicImage>
+			</div>
+			<div class="ui-g-12 ui-md-10">
+				<p:panelGrid columns="6" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="bold,empty,bold,empty,bold,empty">
+				
+				<p:outputLabel value="Nr Unik" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.selection.event.uniqurNumber}" readonly="true"/>
+				<p:outputLabel value="Destinacioni" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.toOrganization.tag}" readonly="true"/>
+				<p:outputLabel value="Statusi Transferimit" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.transferStatus.tag}" readonly="true"/>
+				
+				<p:outputLabel value="Emri" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.selection.person.name}" readonly="true"/>
+				<p:outputLabel value="Mbiemri" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.selection.person.surname}" readonly="true"/>
+				<p:outputLabel value="Gjinia" />
+				
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.selection.person.gender}" readonly="true"/>
+				<p:outputLabel value="Datëlindja" />
+				<p:inputText value="#{formatBean.formatDate(drkmTransferBean.selectedTransfer.selection.person.dob)}" readonly="true"/>
+				<p:outputLabel value="Kombësia" />				
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.selection.person.codeNationality}" readonly="true"/>
+				<p:outputLabel value="Statusi Civil" />				
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.selection.person.codeCivilStatus}" readonly="true"/>
+				
+				<p:outputLabel value="Data Check-Out" />
+				<p:inputText value="#{formatBean.formatTimestamp(drkmTransferBean.selectedTransfer.checkOutTime)}" readonly="true"/>
+				<p:outputLabel value="User Check-Out" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.checkOutUser}" readonly="true"/>
+				<p:outputLabel value="Shenime Check-Out" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.checkOutNotes}" readonly="true"/>
+				
+				
+				<p:outputLabel value="Data Check-In" />
+				<p:inputText value="#{formatBean.formatTimestamp(drkmTransferBean.selectedTransfer.checkInTime)}" readonly="true"/>
+				<p:outputLabel value="User Check-In" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.checkInUser}" readonly="true"/>
+				<p:outputLabel value="Shenime Check-In" />
+				<p:inputText value="#{drkmTransferBean.selectedTransfer.checkInNotes}" readonly="true"/>
+				
+				
+				
+				</p:panelGrid>
+			</div>
+
+			
+			<div class="ui-g-12 ui-md-4 ">
+			
+		     	<p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"  >
+			     	<p:commandButton value="Mbyll" oncomplete="PF('trans_dlg_wid').hide();" styleClass="secondary-btn"/>
+		     	</p:panelGrid>
+
+			</div>
+			
+			
+			
+			
+		</div>
+	
+	</h:form>
+	
+	</p:dialog>
+	
+	
+	
+	
+	
+	
+	
+
+</ui:composition>

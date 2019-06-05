@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="dfac_transfer_waiting_form">
+
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<p:dataTable value="#{dfacTransferWaitingBean.transfers}" var="t"
+					styleClass="no-border" rowIndexVar="r" paginator="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					currentPageReportTemplate="(Shfaqur: {startRecord} - {endRecord} nga {totalRecords}, Faqja: {currentPage}/{totalPages})"
+					paginatorAlwaysVisible="false" rows="20"
+					rowsPerPageTemplate="5,10,20,30,50" reflow="true" rowKey="#{t.id}"
+					emptyMessage="Nuk ka transferime ne proces">
+
+					<f:facet name="header">Transferimet në proces</f:facet>
+
+					<p:column headerText="#" style="text-align: left">
+                    #{r+1}
+                </p:column>
+					<p:column headerText="Nr Unik" sortBy="#{t.selection.event.uniqurNumber}" style="text-align: left">
+                    #{t.selection.event.uniqurNumber}
+                </p:column>
+					<p:column headerText="Foto" style="text-align: left">
+						<p:graphicImage value="#{photoBean.bioImg}" width="50px">
+							<f:param name="event_id" value="#{t.selection.event.id}" />
+						</p:graphicImage>
+					</p:column>
+					<p:column headerText="Emri plotë"
+						sortBy="#{t.selection.person.name}" style="text-align: left">
+						<p:commandLink
+							value="#{t.selection.person.name} #{t.selection.person.surname}"
+							action="#{dfacTransferWaitingBean.onSelectionSelect(t)}"
+							update=":main" />
+					</p:column>
+					<p:column headerText="Dtl" sortBy="#{t.selection.person.dob}"
+						style="text-align: left">
+               		#{formatBean.formatDate(t.selection.person.dob)}
+                </p:column>
+					<p:column headerText="Gj" sortBy="#{t.selection.person.gender}"
+						style="text-align: left">
+               		#{t.selection.person.gender}
+                </p:column>
+					<p:column headerText="Shteti"
+						sortBy="#{t.selection.person.codeNationality}"
+						style="text-align: left">
+               		#{t.selection.person.codeNationality}
+                </p:column>
+					<p:column headerText="Ora nisjes" sortBy="#{t.checkOutTime}"
+						style="text-align: left">
+              	    #{formatBean.formatTimestamp(t.checkOutTime)} 
+                </p:column>
+					<p:column headerText="Vendi nisjes"
+						sortBy="#{t.fromOrganization.tag}" style="text-align: left">
+              	    #{t.fromOrganization.tag}
+                </p:column>
+					<p:column headerText="Destinacioni"
+						sortBy="#{t.toOrganization.tag}" style="text-align: left">
+              	    #{t.toOrganization.tag}
+                </p:column>
+					<p:column headerText="Përdoruesi" sortBy="#{t.checkOutUser}"
+						style="text-align: left">
+              	    #{t.checkOutUser}
+                </p:column>
+
+				</p:dataTable>
+			</div>
+
+		</div>
+
+	</h:form>
+	
+	
+	<p:dialog header="Detajet e transferimit" id="transfer_dlg"
+		widgetVar="transferWid" modal="true" responsive="true"
+		closeOnEscape="true" styleClass="width: 50%">
+
+		<h:form id="dfac_transfer_view_form">
+	
+	
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12">
+					
+						
+						
+						
+					</div>					
+				</div>
+	
+		
+		</h:form>
+
+	</p:dialog>
+	
+	
+	
+	
+	
+
+</ui:composition>
