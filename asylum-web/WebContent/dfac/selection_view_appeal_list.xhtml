@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+
+	<div class="ui-g ui-fluid nopad">
+
+		<div class="ui-g-12 nopad">
+			<p:panel header="ANKIMIME" styleClass="panelSuccess">
+
+				<f:facet name="actions">
+
+
+					<p:commandButton value="Shto" icon="fa fa-plus"
+						            action="#{dfacSelectionViewBean.prepareAppeal()}"
+						oncomplete="PF('appealWid').show();" update=":appeal_dlg"
+						            title="Regjistro Ankimim" />
+
+				</f:facet>
+
+
+				<div class="ui-g">
+					<div class="ui-g-12">
+						<p:messages showDetail="true" closable="true" />
+					</div>
+
+
+					<h:panelGroup rendered="#{empty dfacSelectionViewBean.appeals}">
+						<div class="ui-g-12 ">
+							<h3 style="color: #7f202f; font-weight: bold">Nuk ka
+								Ankimime !</h3>
+						</div>
+					</h:panelGroup>
+					<div class="ui-g-12 ">
+						<p:dataTable value="#{dfacSelectionViewBean.appeals}" var="app" rendered="#{not empty dfacSelectionViewBean.appeals}" styleClass="no-border">
+							<p:column headerText="Nr Vendimi" style="text-align: left">#{app.decisionNo}</p:column>
+							<p:column headerText="Datë Vendimi" style="text-align: left">#{formatBean.formatDate(app.decisionDate)}</p:column>
+							<p:column headerText="Regjistruesi" style="text-align: left">#{app.appealUser}</p:column>
+							<p:column headerText="Datë regjistrimi" style="text-align: left">#{formatBean.formatTimestamp(app.appealTime)}</p:column>
+							<p:column headerText="Shënime" style="text-align: left">#{app.notes}</p:column>
+						</p:dataTable>
+					</div>
+				</div>
+			</p:panel>
+		</div>
+
+	</div>
+
+</ui:composition>

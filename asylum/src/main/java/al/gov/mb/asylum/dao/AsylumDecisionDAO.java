@@ -1,5 +1,6 @@
 package al.gov.mb.asylum.dao;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import al.gov.mb.asylum.constants.IStatus;
 import al.gov.mb.asylum.entities.AsylumDecision;
 import al.gov.mb.asylum.forms.AsylumDecisionSx;
+import al.gov.mb.asylum.utils.DateUtil;
 import al.gov.mb.asylum.utils.StringUtil;
 
 @Repository
@@ -42,11 +44,37 @@ public class AsylumDecisionDAO {
 			sql += "AND upper(t.selection.person.name) like :name ";
 			params.put("name", req.getName().trim().toUpperCase());
 		}
+		
+		if(req.getGender() != null)
+		{
+			sql += "AND t.selection.person.gender = :gnd ";
+			params.put("gnd", req.getGender());
+		}
+		
+		
 		if(StringUtil.isValid(req.getSurname()))
 		{
 			sql += "AND upper(t.selection.person.surname) like :surname ";
 			params.put("surname", req.getSurname());
 		}
+		
+		if(req.getFromAge() != null)
+		{
+			Date from = DateUtil.getBirthdate(req.getFromAge());
+			
+			sql += "AND t.selection.person.dob <= :fromAge ";
+			params.put("fromAge", from);
+		}
+		
+		if(req.getToAge() != null)
+		{
+			Date to = DateUtil.getBirthdate(req.getToAge());
+			
+			sql += "AND t.selection.person.dob >= :toAge ";
+			params.put("toAge", to);
+		}
+		
+		
 		if(req.getSelectionId() != null)
 		{
 			sql += "AND t.selection.event.id=:sid ";
@@ -68,17 +96,21 @@ public class AsylumDecisionDAO {
 		
 		if(req.getFromDate() != null)
 		{
-			sql += "AND trunc(t.decisionTime) >= :fdt ";
+			sql += "AND trunc(t.orderDate) >= :fdt ";
 			params.put("fdt", req.getFromDate());
 		}
 		
 		if(req.getToDate() != null)
 		{
-			sql += "AND trunc(t.decisionTime) <= :tdt ";
+			sql += "AND trunc(t.orderDate) <= :tdt ";
 			params.put("tdt", req.getToDate());
 		}
 		
-		
+		if(req.getTypeId() != null)
+		{
+			sql += "AND t.decisionType.id = :dtid ";
+			params.put("dtid", req.getTypeId());
+		}
 		
 		
 		sql += order;

@@ -78,8 +78,8 @@
                 <p:column headerText="Shteti" sortBy="#{i.selection.person.codeNationality}" style="text-align: left">
                		#{i.selection.person.codeNationality}
                 </p:column> 
-                <p:column headerText="Data Intervistës" sortBy="#{i.interviewTime}" style="text-align: left">
-              	    #{formatBean.formatTimestamp(i.interviewTime)} 
+                <p:column headerText="Data Intervistës" sortBy="#{i.predictedInterviewDate}" style="text-align: left">
+              	    #{formatBean.formatDate(i.predictedInterviewDate)} 
                 </p:column>         
 				<p:column headerText="Intervistuesi" sortBy="#{i.interviewer}" style="text-align: left">
 					#{i.interviewer}
@@ -138,8 +138,7 @@
 							<p:outputLabel value="Shënime"/>
 							<p:inputTextarea value="#{dfacInterviewedBean.selectedInterview.selectionNotes}" readonly="true"/>
 							
-							<p:outputLabel value="Data Intervistes"/>
-							<p:inputText value="#{formatBean.formatDate(dfacInterviewedBean.selectedInterview.interviewTime)}" readonly="true"/>
+							
 							<p:outputLabel value="Intervistuesi"/>
 							<p:inputText value="#{dfacInterviewedBean.selectedInterview.interviewer}" readonly="true"/>
 							<p:outputLabel value="Përkthyesi"/>

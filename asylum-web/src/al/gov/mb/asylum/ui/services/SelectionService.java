@@ -34,6 +34,11 @@ public class SelectionService {
 		return new SelectionClient().modifySelection(selection);
 	}
 	
+	public List<SelectionDTO> getSelectionsNotGoneFromQkpa()
+	{
+		return new SelectionClient().getSelectionsNotGoneFromQkpa();
+	}
+	
 	
 	
 }

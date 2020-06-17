@@ -135,6 +135,31 @@ public class SelectionClient {
 		
 		return null;
 	}
+
+	public List<SelectionDTO> getSelectionsNotGoneFromQkpa() {
+		final String BASE_URL = IApiClient.SERVER+"/api/selection/notGoneFromQkpa";
+	    
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(BASE_URL);
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new ApiErrorHandler());
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.set("Authorization", "Bearer "+Util.getToken());
+		HttpEntity<?> entity = new HttpEntity<SelectionDTO>(headers);
+		
+		ParameterizedTypeReference<List<SelectionDTO>> typeRef = new ParameterizedTypeReference<List<SelectionDTO>>() {};
+		
+		ResponseEntity<List<SelectionDTO>> response = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, entity, typeRef);
+		
+		if(response.getStatusCode() == HttpStatus.OK)
+		{
+			return response.getBody();
+		}
+				
+		return null;
+	}
 	
 	
 	

@@ -9,8 +9,7 @@
 
 		<div class="ui-g ui-fluid">
 				<div class="ui-g-12">
-					<div class="card card-w-title" style="background-color: #F5F5F5">
-						<h1>Kërko të përzgjedhurit</h1>
+					<p:panel header="KËRKO TË PËRZGJEDHURIT">
 						<div class="ui-g">
 							<div class="ui-g-12">
 
@@ -90,7 +89,7 @@
 							<div class="ui-g-12 ui-md-4">
 								<p:panelGrid layout="grid" columns="2"
 									styleClass="ui-panelgrid-blank">
-									<p:commandButton value="Kërko" update="@form" styleClass="blue-btn"
+									<p:commandButton value="Kërko" update="@form" styleClass="purple-btn"
 										action="#{dfacSelectionBean.search()}" icon="ui-icon-search" />
 										<p:commandButton value="Pastro" update="@form"
 										action="#{dfacSelectionBean.clear()}" icon="ui-icon-trash" 
@@ -105,7 +104,7 @@
 							</div>
 
 						</div>
-					</div>
+					</p:panel>
 				</div>
 				
 				<div class="ui-g-12">

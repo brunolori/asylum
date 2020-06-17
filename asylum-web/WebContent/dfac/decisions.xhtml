@@ -1,0 +1,200 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="dfac_interviewed_form">
+
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+					<div class="card card-w-title" style="background-color: #F5F5F5">
+						<h1>Kërko vendime</h1>
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:panelGrid layout="grid" columns="4"
+									styleClass="ui-panelgrid-blank form-group">
+									
+									<p:calendar pattern="dd.MM.yyyy" value="#{dfacDecisionsBean.req.fromDate}" placeholder="Nga data vendimit"/>
+									<p:calendar pattern="dd.MM.yyyy" value="#{dfacDecisionsBean.req.toDate}" placeholder="Në datën e vendimit"/>
+									<p:inputText value="#{dfacDecisionsBean.req.name}" placeholder="Emri" />
+									<p:inputText value="#{dfacDecisionsBean.req.surname}" placeholder="Mbiemri"/>	
+									
+									<p:inputText value="#{dfacDecisionsBean.req.orderNo}" placeholder="Nr Vendimi" />
+									
+									<p:selectOneMenu value="#{dfacDecisionsBean.req.statusId}" autoWidth="false">
+										<f:selectItem itemValue="#{null}" itemLabel="Statusi i Ri"/>
+										<f:selectItems value="#{cacheBean.asylantStatuses}" var="as" itemValue="#{as.id}" itemLabel="#{as.tag}"/>
+									</p:selectOneMenu>	
+									
+									<p:selectOneMenu value="#{dfacDecisionsBean.req.stageId}" autoWidth="false">
+										<f:selectItem itemValue="#{null}" itemLabel="Faza"/>
+										<f:selectItems value="#{cacheBean.asylantStages}" var="ag" itemValue="#{ag.id}" itemLabel="#{ag.tag}"/>
+									</p:selectOneMenu>	
+									
+									<p:selectOneMenu value="#{dfacDecisionsBean.req.typeId}" autoWidth="false">
+										<f:selectItem itemValue="#{null}" itemLabel="Tipi vendimit"/>
+										<f:selectItems value="#{cacheBean.asylumDecisionTypes}" var="adt" itemValue="#{adt.id}" itemLabel="#{adt.tag}"/>
+									</p:selectOneMenu>	
+									
+									
+									<p:inputText value="#{dfacDecisionsBean.req.fromAge}" placeholder="Nga mosha" />
+									<p:inputText value="#{dfacDecisionsBean.req.toAge}" placeholder="Në moshën" />
+									
+									<p:selectOneMenu value="#{dfacDecisionsBean.req.gender}" autoWidth="false">
+										<f:selectItem itemValue="#{null}" itemLabel="Gjinia"/>
+										<f:selectItem itemValue="M" itemLabel="Mashkull"/>
+										<f:selectItem itemValue="F" itemLabel="Femër"/>
+									</p:selectOneMenu>	
+															
+								</p:panelGrid>
+							</div>
+							<div class="ui-g-12 ui-md-4">
+								<p:panelGrid layout="grid" columns="2"
+									styleClass="ui-panelgrid-blank">
+									<p:commandButton value="Kërko" update="@form" styleClass="blue-btn"
+										action="#{dfacDecisionsBean.search()}" icon="ui-icon-search" />
+										<p:commandButton value="Pastro" update="@form"
+										action="#{dfacDecisionsBean.clear()}" icon="ui-icon-trash" 
+										styleClass="green-btn"/>
+								</p:panelGrid>
+							</div>
+
+							<div class="ui-g-12">
+								<p:messages showDetail="true" closable="true" >
+									<p:autoUpdate />
+								</p:messages>
+							</div>
+							
+						</div>
+					</div>
+			</div>
+				
+				<div class="ui-g-12">
+				<p:dataTable value="#{dfacDecisionsBean.decisions}"
+					rendered="#{not empty dfacDecisionsBean.decisions}" var="d" styleClass="no-border"
+					rowIndexVar="r" 
+					paginator="true" 
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					    currentPageReportTemplate="(Shfaqur: {startRecord} - {endRecord} nga {totalRecords}, Faqja: {currentPage}/{totalPages})"
+						paginatorAlwaysVisible="false" rows="20"
+						rowsPerPageTemplate="5,10,20,30,50" reflow="true"
+					    rowKey="#{d.id}" 
+					>
+				
+				<p:column headerText="#" style="text-align: left">
+                    #{r+1}
+                </p:column>
+				<p:column headerText="Nr Unik" sortBy="#{d.selection.event.uniqurNumber}" style="text-align: left">
+                    #{d.selection.event.uniqurNumber}
+                </p:column>               
+                <p:column headerText="Foto" style="text-align: left">
+					<p:graphicImage value="#{photoBean.bioImg}" width="50px" >
+					<f:param name="event_id" value="#{d.selection.event.id}" />
+					</p:graphicImage>
+				</p:column>
+                <p:column headerText="Emri plotë" sortBy="#{d.selection.person.name}" style="text-align: left">
+                   <p:commandLink value="#{d.selection.person.name} #{d.selection.person.surname}" action="#{dfacDecisionsBean.onSelectionSelect(d)}" update=":main"/>
+                </p:column>
+                <p:column headerText="Dtl" sortBy="#{d.selection.person.dob}" style="text-align: left">
+               		#{formatBean.formatDate(d.selection.person.dob)}
+                </p:column>   
+                <p:column headerText="Gj" sortBy="#{d.selection.person.gender}" style="text-align: left">
+               		#{d.selection.person.gender}
+                </p:column>   
+                <p:column headerText="Shteti" sortBy="#{d.selection.person.codeNationality}" style="text-align: left">
+               		#{d.selection.person.codeNationality}
+                </p:column> 
+                <p:column headerText="Tipi" sortBy="#{d.orderNo}" style="text-align: left">
+					#{d.decisionType.tag}
+				</p:column>
+                <p:column headerText="Data Vendimit" sortBy="#{d.orderDate}" style="text-align: left">
+              	    #{formatBean.formatDate(d.orderDate)} 
+                </p:column>         
+				<p:column headerText="Nr Vendimi" sortBy="#{d.orderNo}" style="text-align: left">
+					#{d.orderNo}
+				</p:column>
+				<p:column headerText="Statusi" sortBy="#{d.newStatus.tag}" style="text-align: left;">
+					#{d.newStatus.tag}
+				</p:column>
+				<p:column headerText="Faza" sortBy="#{d.newStage.tag}" style="text-align: left">
+					#{d.newStage.tag}
+				</p:column>
+				<p:column headerText="Përdoruesi" sortBy="#{d.decisionUser}" style="text-align: left">
+					#{d.decisionUser}
+				</p:column>
+				<p:column>
+					<p:commandButton icon="fa fa-check" action="#{dfacDecisionsBean.onDecisionSelect(d)}" update=":decision_dlg"
+				                  	 styleClass="green-btn" title="Shiko detajet"
+					                 oncomplete="PF('decisionWid').show();"/>
+				</p:column>
+                
+
+				</p:dataTable>
+			</div>					
+				
+			</div>
+
+	</h:form>
+	
+	
+	<p:dialog header="Detajet e Vendimit" id="decision_dlg"
+		widgetVar="decisionWid" modal="true" responsive="true"
+		closeOnEscape="true" width="900px" >
+
+		<h:form id="dfac_decision_view_form">
+	
+	
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12 ui-md-3">
+						<p:graphicImage value="#{photoBean.bioImg}" width="150">
+					           <f:param name="event_id" value="#{dfacDecisionsBean.selectedDecision.selection.event.id}"/>
+					    </p:graphicImage>						
+					</div>			
+					<div class="ui-g-12 ui-md-9">
+					
+						<p:panelGrid layout="grid" columns="4" styleClass="ui-panelgrid-blank" columnClasses="bold,empty,bold,empty">
+							<p:outputLabel value="Emri"/>
+							<p:inputText value="#{dfacDecisionsBean.selectedDecision.selection.person.name}" readonly="true"/>
+							<p:outputLabel value="Mbiemri"/>
+							<p:inputText value="#{dfacDecisionsBean.selectedDecision.selection.person.surname}" readonly="true"/>
+							
+							<p:outputLabel value="Datëlindja"/>
+							<p:inputText value="#{formatBean.formatDate(dfacDecisionsBean.selectedDecision.selection.person.dob)}" readonly="true"/>
+							<p:outputLabel value="Shtetësia"/>
+							<p:inputText value="#{dfacDecisionsBean.selectedDecision.selection.person.codeNationality}" readonly="true"/>
+							
+							<p:outputLabel value="Nr Vendimit"/>
+							<p:inputText value="#{dfacDecisionsBean.selectedDecision.orderNo}" readonly="true"/>
+							<p:outputLabel value="Data Vendimit"/>
+							<p:inputText value="#{formatBean.formatDate(dfacDecisionsBean.selectedDecision.orderDate)}" readonly="true"/>
+							
+							<p:outputLabel value="Statusi"/>
+							<p:inputText value="#{dfacDecisionsBean.selectedDecision.newStatus.tag}" readonly="true"/>
+							<p:outputLabel value="Faza"/>
+							<p:inputText value="#{dfacDecisionsBean.selectedDecision.newStage.tag}" readonly="true"/>
+							
+							<p:outputLabel value="Përdoruesi"/>
+							<p:inputText value="#{dfacDecisionsBean.selectedDecision.decisionUser}" readonly="true"/>
+							
+							<p:outputLabel value="Shënime"/>
+							<p:inputTextarea value="#{dfacDecisionsBean.selectedDecision.notes}" readonly="true"/>
+							
+						</p:panelGrid>
+					
+					</div>		
+				</div>
+	
+		
+		</h:form>
+
+	</p:dialog>
+	
+	
+	
+	
+	
+	
+
+</ui:composition>

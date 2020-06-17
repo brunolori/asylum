@@ -18,7 +18,9 @@
 			
 				<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-12 ui-md-4 bold, ui-g-12 ui-md-8 empty" styleClass="ui-panelgrid-blank">
 					<p:outputLabel value="Data Intervistimit"/>
-					<p:calendar pattern="dd.MM.yyyy" value="#{dfacSelectionViewBean.interview.predictedInterviewDate}" placeholder="Data Intervistës"/>
+					<p:calendar pattern="dd.MM.yyyy" value="#{dfacSelectionViewBean.interview.predictedInterviewDate}" 
+					focusOnSelect="false"
+					placeholder="Data Intervistës"/>
 					<p:outputLabel value="Shënime"/>
 					<p:inputTextarea value="#{dfacSelectionViewBean.interview.selectionNotes}" placeholder="Shënime"/>
 									

@@ -57,6 +57,7 @@ public class DfacTransferGoneBean implements Serializable {
 	{
 		req = new TransferSx();
 		req.setTransferStatusId(ITransferStatus.GONE);
+		req.setMaxResult(200);
 		
 		search();
 		

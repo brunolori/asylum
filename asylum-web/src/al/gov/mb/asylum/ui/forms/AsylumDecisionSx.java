@@ -13,11 +13,14 @@ public class AsylumDecisionSx implements Serializable {
 	String uniqueNo;
 	String name;
 	String surname;
+	String gender;
+	Integer fromAge;
+	Integer toAge;
 	String orderNo;
 	Integer statusId;
 	Integer stageId;
 	Integer selectionId;
-	Integer transferStatusId;
+	Integer typeId;
 	Date fromDate;
 	Date toDate;
 	
@@ -83,12 +86,7 @@ public class AsylumDecisionSx implements Serializable {
 	public void setSelectionId(Integer selectionId) {
 		this.selectionId = selectionId;
 	}
-	public Integer getTransferStatusId() {
-		return transferStatusId;
-	}
-	public void setTransferStatusId(Integer transferStatusId) {
-		this.transferStatusId = transferStatusId;
-	}
+	
 	public Date getFromDate() {
 		return fromDate;
 	}
@@ -112,6 +110,38 @@ public class AsylumDecisionSx implements Serializable {
 	}
 	public void setMaxResult(Integer maxResult) {
 		this.maxResult = maxResult;
+	}
+
+	public Integer getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public Integer getFromAge() {
+		return fromAge;
+	}
+
+	public void setFromAge(Integer fromAge) {
+		this.fromAge = fromAge;
+	}
+
+	public Integer getToAge() {
+		return toAge;
+	}
+
+	public void setToAge(Integer toAge) {
+		this.toAge = toAge;
 	}
 	
 	

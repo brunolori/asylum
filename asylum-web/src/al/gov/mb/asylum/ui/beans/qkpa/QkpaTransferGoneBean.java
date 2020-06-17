@@ -57,8 +57,11 @@ public class QkpaTransferGoneBean implements Serializable {
 	{
 		req = new TransferSx();
 		req.setTransferStatusId(ITransferStatus.GONE);
+		req.setMaxResult(100);
 		
 		search();
+		
+		req.setMaxResult(null);
 		
 	}
 	

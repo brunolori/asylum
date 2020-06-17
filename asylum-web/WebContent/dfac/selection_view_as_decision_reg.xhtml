@@ -19,10 +19,16 @@
 			<div class="ui-g-12">
 				<p:panelGrid layout="grid" columns="4" columnClasses="bold,empty,bold,empty" styleClass="ui-panelgrid-blank">
 				
-					<p:outputLabel value="Statusi Aktual"/>
-					<p:inputText value="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus.tag}" readonly="true"/>
-					<p:outputLabel value="Faza e Statusit"/>
-					<p:inputText value="#{dfacSelectionViewBean.selection.asylantDetails.asylantStage.tag}" readonly="true"/>
+					<p:outputLabel value="Statusi Aktual" rendered="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus != null}"/>
+					<p:inputText value="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus.tag}" 
+					rendered="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus != null}"
+					style="background: antiquewhite"
+					 readonly="true"/>
+					<p:outputLabel value="Faza e Statusit" rendered="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus != null}"/>
+					<p:inputText value="#{dfacSelectionViewBean.selection.asylantDetails.asylantStage.tag}" 
+					rendered="#{dfacSelectionViewBean.selection.asylantDetails.asylantStatus != null}"
+					style="background: antiquewhite"
+					readonly="true"/>
 					
 					
 					<p:outputLabel value="Nr Vendimi"/>
@@ -40,12 +46,12 @@
 						<f:selectItems value="#{cacheBean.asylantStages}" var="ag" itemValue="#{ag}" itemLabel="#{ag.tag}"/>
 					</p:selectOneMenu>				
 				</p:panelGrid>
-				
+				<div class="ui-g-12">
 				<p:panelGrid layout="grid" columns="2" columnClasses="bold ui-g-12 ui-md-3,ui-g-12 ui-md-9" styleClass="ui-panelgrid-blank">
 					<p:outputLabel value="Shënime"/>
-					<p:inputText value="#{dfacSelectionViewBean.asylumDecision.notes}" placeholder="Shënime"/>
+					<p:inputTextarea value="#{dfacSelectionViewBean.asylumDecision.notes}" placeholder="Shënime"/>
 				</p:panelGrid>
-				
+				</div>
 				
 			</div>
 			

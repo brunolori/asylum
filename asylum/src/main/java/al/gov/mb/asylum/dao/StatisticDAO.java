@@ -29,8 +29,8 @@ public class StatisticDAO {
 	//******** AZILANTS ******************************
 	public List<KeyValue> registeredSelectionsByPeriod(Date from, Date to)
 	{
-		return em.createQuery("SELECT new "+KeyValue.class.getName()+"(trunc(s.recordDate) as dt,count(s)) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to GROUP BY trunc(s.recordDate) ORDER BY dt")
+		return em.createQuery("SELECT new "+KeyValue.class.getName()+"(trunc(s.event.eventDate) as dt,count(s)) FROM Selection s "
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to GROUP BY trunc(s.event.eventDate) ORDER BY dt")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -40,7 +40,7 @@ public class StatisticDAO {
 	public List<KeyValue> registeredSelectionsByOrganization(Date from, Date to)
 	{
 		return em.createQuery("SELECT new "+KeyValue.class.getName()+"(s.event.organization.tag as org,count(s)) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to GROUP BY s.event.organization.tag ORDER BY org")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to GROUP BY s.event.organization.tag ORDER BY org")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -50,7 +50,7 @@ public class StatisticDAO {
 	public List<KeyValue> registeredSelectionsByState(Date from, Date to)
 	{
 		return em.createQuery("SELECT new "+KeyValue.class.getName()+"(s.person.codeNationality as state,count(s) as cnt) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to GROUP BY s.person.codeNationality ORDER BY cnt DESC,state")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to GROUP BY s.person.codeNationality ORDER BY cnt DESC,state")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -60,7 +60,7 @@ public class StatisticDAO {
 	public List<KeyValue> registeredSelectionsByGender(Date from, Date to)
 	{
 		return em.createQuery("SELECT new "+KeyValue.class.getName()+"(s.person.gender as gender,count(s)) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to GROUP BY s.person.gender")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to GROUP BY s.person.gender")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -75,7 +75,7 @@ public class StatisticDAO {
 		
 		Date dob = cal.getTime();
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.person.dob >= :dob")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.person.dob >= :dob")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -86,7 +86,7 @@ public class StatisticDAO {
 	public long unaccompainedChildCountByPeriod(Date from, Date to)
 	{
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.unaccompainedChild=:uac")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.unaccompainedChild=:uac")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -97,7 +97,7 @@ public class StatisticDAO {
 	public long personsInNeedCountByPeriod(Date from, Date to)
 	{
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.inNeed=:inn")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.inNeed=:inn")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -108,7 +108,7 @@ public class StatisticDAO {
 	public long gonePersonsCountByPeriod(Date from, Date to)
 	{
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.currentLocation.id=:clid")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.currentLocation.id=:clid")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -119,7 +119,7 @@ public class StatisticDAO {
 	public long returnedPersonsCountByPeriod(Date from, Date to)
 	{
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.returned=:rtn")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.returned=:rtn")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -131,7 +131,7 @@ public class StatisticDAO {
 	public long refugeeCountByPeriod(Date from, Date to)
 	{
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.asylantStatus.id=:ass")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.asylantStatus.id=:ass")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -141,7 +141,7 @@ public class StatisticDAO {
 
 	public long countAll(Date from, Date to) {
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -150,7 +150,7 @@ public class StatisticDAO {
 
 	public long temporaryProtectionCountByPeriod(Date from, Date to) {
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.asylantStatus.id=:ass")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.asylantStatus.id=:ass")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -160,7 +160,7 @@ public class StatisticDAO {
 
 	public long internationalProtectionCountByPeriod(Date from, Date to) {
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.asylantStatus.id=:ass")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.asylantStatus.id=:ass")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)
@@ -170,7 +170,7 @@ public class StatisticDAO {
 
 	public long extraProtectionCountByPeriod(Date from, Date to) {
 		return (Long) em.createQuery("SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.asylantStatus.id=:ass")
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.asylantStatus.id=:ass")
 				.setParameter("irs", IIrStatus.AZILANT)
 				.setParameter("from", from)
 				.setParameter("to", to)

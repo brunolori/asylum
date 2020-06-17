@@ -83,10 +83,7 @@ public class HearingService {
 		{
 			throw new ValidationException("Plotesoni Perkthyesin");
 		}
-		if(!StringUtil.isValid(dto.getNotes()))
-		{
-			throw new ValidationException("Plotesoni Shenimet e Degjeses");
-		}
+	
 		
 		
 		Hearing i = crudDAO.findById(Hearing.class, dto.getId());

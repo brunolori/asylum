@@ -17,8 +17,12 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
+import al.gov.mb.asylum.constants.IIrStatus;
+import al.gov.mb.asylum.constants.IStatus;
+import al.gov.mb.asylum.constants.ITransferStatus;
 import al.gov.mb.asylum.entities.tims.Selection;
 import al.gov.mb.asylum.forms.SelectionSx;
+import al.gov.mb.asylum.utils.DateUtil;
 import al.gov.mb.asylum.utils.StringUtil;
 
 @Repository
@@ -208,12 +212,12 @@ public class SelectionDAO {
 		}
 		if(req.getFromDate() != null)
 		{
-			sql += "AND TRUNC(t.recordDate)>=:from ";
+			sql += "AND TRUNC(t.event.eventDate)>=:from ";
 			params.put("from", req.getFromDate());
 		}
 		if(req.getToDate() != null)
 		{
-			sql += "AND TRUNC(t.recordDate)<=:to ";
+			sql += "AND TRUNC(t.event.eventDate)<=:to ";
 			params.put("to", req.getToDate());
 		}
 		if(StringUtil.isValid(req.getIrStatusCode()))
@@ -254,6 +258,37 @@ public class SelectionDAO {
 		
 		
 		return q.getResultList();
+	}
+
+
+
+
+
+
+
+
+	public List<Selection> notGoneFromQkpa() {
+
+		
+		
+		EntityGraph eg = em.createEntityGraph(Selection.class);
+		eg.addAttributeNodes("event");
+		eg.addAttributeNodes("asylantDetails");
+		eg.addAttributeNodes("person");
+		eg.addAttributeNodes("handed");
+		eg.addAttributeNodes("irStatus");
+		
+		Query q = em.createQuery("FROM Selection s LEFT JOIN s.event e WHERE s.irStatus.id=:irs AND s.selectionDate>=:sdt and s.event IS NOT NULL " 
+				+ "AND s.id NOT IN (SELECT t.selection.id FROM Transfer t WHERE t.status=:tst AND t.transferStatus.id = :ts) "
+				+ "ORDER BY s.selectionDate DESC")
+				.setHint("javax.persistence.loadgraph", eg)
+				.setParameter("sdt", DateUtil.formatStringToDate("01.10.2019"))
+				.setParameter("irs", IIrStatus.AZILANT)
+				.setParameter("tst", IStatus.ACTIVE)
+				.setParameter("ts", ITransferStatus.GONE);
+		
+		return q.getResultList();
+		
 	}
 	
 	

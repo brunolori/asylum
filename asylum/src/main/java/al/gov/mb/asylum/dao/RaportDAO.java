@@ -28,15 +28,15 @@ public class RaportDAO {
 	public List<KeyValue> registeredSelectionsByPeriod(Date from, Date to, Integer organizationId)
 	{
 		
-		String sql = "SELECT new "+KeyValue.class.getName()+"(trunc(s.recordDate) as dt,count(s)) FROM Selection s "
-				+ "WHERE TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to ";
+		String sql = "SELECT new "+KeyValue.class.getName()+"(trunc(s.event.eventDate) as dt,count(s)) FROM Selection s "
+				+ "WHERE TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to ";
 		
 		if(organizationId != null)
 		{
 			sql += "AND s.event.organization.id=:orgId ";
 		}
 		
-		sql += "GROUP BY trunc(s.recordDate) ORDER BY dt";
+		sql += "GROUP BY trunc(s.event.eventDate) ORDER BY dt";
 				
 		Query q = em.createQuery(sql)
 				.setParameter("from", from)
@@ -53,7 +53,7 @@ public class RaportDAO {
 	public List<KeyValue> registeredSelectionsByOrganization(Date from, Date to)
 	{
 		return em.createQuery("SELECT new "+KeyValue.class.getName()+"(s.event.organization.tag as org,count(s)) FROM Selection s "
-				+ "WHERE TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to GROUP BY s.event.organization.tag ORDER BY org")
+				+ "WHERE TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to GROUP BY s.event.organization.tag ORDER BY org")
 				.setParameter("from", from)
 				.setParameter("to", to)
 				.getResultList();
@@ -63,7 +63,7 @@ public class RaportDAO {
 	{		
 		
 		String sql = "SELECT new "+KeyValue.class.getName()+"(s.person.codeNationality as state,count(s) as cnt) FROM Selection s " + 
-					 "WHERE TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to ";
+					 "WHERE TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to ";
 		
 		if(organizationId != null)
 		{
@@ -88,7 +88,7 @@ public class RaportDAO {
 	{		
 		
 		String sql = "SELECT new "+KeyValue.class.getName()+"(s.person.gender as gender,count(s)) FROM Selection s "
-				+ "WHERE TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to ";
+				+ "WHERE TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to ";
 		
 		if(organizationId != null)
 		{
@@ -119,7 +119,7 @@ public class RaportDAO {
 		
 		
 		String sql = "SELECT count(s) FROM Selection s "
-				+ "WHERE TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.person.dob >= :dob ";
+				+ "WHERE TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.person.dob >= :dob ";
 		
 		if(organizationId != null)
 		{
@@ -145,7 +145,7 @@ public class RaportDAO {
 	public long countAll(Date from, Date to, Integer organizationId) {		
 		
 		String sql = "SELECT count(s) FROM Selection s "
-				+ "WHERE TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to ";
+				+ "WHERE TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to ";
 		
 		if(organizationId != null)
 		{
@@ -169,7 +169,7 @@ public class RaportDAO {
 	public long countAllByIrStatus(Date from, Date to, String isStatusCode, Integer organizationId) {		
 		
 		String sql = "SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to ";
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to ";
 		
 		if(organizationId != null)
 		{
@@ -195,7 +195,7 @@ public class RaportDAO {
 	{		
 		
 		String sql = "SELECT new "+KeyValue.class.getName()+"(s.event.placeType.tag as p_type,count(s) as cnt) FROM Selection s " + 
-					 "WHERE TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to ";
+					 "WHERE TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to ";
 		
 		if(organizationId != null)
 		{
@@ -220,7 +220,7 @@ public class RaportDAO {
 	{		
 		
 		String sql = "SELECT new "+KeyValue.class.getName()+"(d.decisionType.id as d_type,count(d) as cnt) FROM Decision d " + 
-					 "WHERE TRUNC(d.recordDate)>=:from AND TRUNC(d.recordDate)<=:to ";
+					 "WHERE TRUNC(d.orderDate)>=:from AND TRUNC(d.orderDate)<=:to ";
 		
 		if(organizationId != null)
 		{
@@ -246,7 +246,7 @@ public class RaportDAO {
 	{
 		
 		String sql = "SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.currentLocation.id=:clid ";
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.currentLocation.id=:clid ";
 		
 		if(organizationId != null)
 		{
@@ -272,7 +272,7 @@ public class RaportDAO {
 		
 		
 		String sql = "SELECT count(s) FROM Selection s "
-				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.recordDate)>=:from AND TRUNC(s.recordDate)<=:to and s.asylantDetails.returned=:rtn " ;
+				+ "WHERE s.irStatus.id=:irs AND TRUNC(s.event.eventDate)>=:from AND TRUNC(s.event.eventDate)<=:to and s.asylantDetails.returned=:rtn " ;
 		
 		if(organizationId != null)
 		{

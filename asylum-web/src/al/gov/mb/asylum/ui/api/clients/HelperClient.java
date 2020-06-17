@@ -260,6 +260,23 @@ public class HelperClient {
 	
 	public List<AsylumDecisionTypeDTO> listAsylumDecisionType()
 	{
+		final String BASE_URL = IApiClient.SERVER+"/api/helper/list/asylumDecisionType";
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(BASE_URL);		
+		
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);	
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		
+		ParameterizedTypeReference<List<AsylumDecisionTypeDTO>> typeRef = new ParameterizedTypeReference<List<AsylumDecisionTypeDTO>>() {};
+		
+		ResponseEntity<List<AsylumDecisionTypeDTO>> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, typeRef);
+		
+		if(response.getStatusCode() == HttpStatus.OK)
+		{
+			return response.getBody();
+		}
+				
 		return null;
 	}
 	

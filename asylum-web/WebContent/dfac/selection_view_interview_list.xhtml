@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+
+	<div class="ui-g ui-fluid nopad">
+
+
+		<div class="ui-g-12 nopad">
+			<p:panel header="INTERVISTAT" styleClass="panelDefault">
+
+           <f:facet name="actions">
+           
+           
+           
+           <h:panelGrid columns="2">
+           
+			             <p:commandButton value="Përzgjidh" 
+			                              icon="fa fa-thumb-tack"
+									      action="#{dfacSelectionViewBean.prepareSelectForInterview()}"
+										  oncomplete="PF('selectInterviewWid').show();" update=":select_interview_dlg"
+										  title="Përzgjidh për intervistë" />
+						<p:commandButton value="Intervisto" styleClass="green-btn"
+			                              icon="fa fa-question"
+									      action="#{dfacSelectionViewBean.prepareInterview()}"
+										  title="Intervisto" />
+           </h:panelGrid>           
+                         
+            </f:facet>
+
+
+
+				<div class="ui-g">
+					<div class="ui-g-12">
+						<p:messages showDetail="true" closable="true" >
+					     	<p:autoUpdate/>
+						</p:messages>
+					</div>
+
+					<h:panelGroup rendered="#{empty dfacSelectionViewBean.interviews}">
+						<div class="ui-g-12">
+							<h3 style="color: #7f202f; font-weight: bold">Nuk ka
+								Intervista !</h3>
+						</div>
+					</h:panelGroup>
+
+
+					<div class="ui-g-12">
+
+
+                   <p:dataTable value="#{dfacSelectionViewBean.interviews}" var="i"
+							rendered="#{not empty dfacSelectionViewBean.interviews}" rowIndexVar="r"
+						 styleClass="no-border">
+							
+							<p:column headerText="#" style="text-align: left">
+							#{r+1}
+							</p:column>
+							<p:column headerText="Data paracaktuar" style="text-align: left">
+							#{formatBean.formatDate(i.predictedInterviewDate)}
+							</p:column>
+							<p:column headerText="Statusi" style="text-align: left">
+							#{i.interviewStatus.tag}
+							</p:column>
+							<p:column headerText="Data intervistimit" style="text-align: left" rendered="false">
+							#{formatBean.formatTimestamp(i.interviewTime)}
+							</p:column>
+							<p:column headerText="Intervistuesi" style="text-align: left">
+							#{i.interviewer}
+							</p:column>
+							<p:column headerText="Përkthyesi" style="text-align: left">
+							#{i.translator}
+							</p:column>
+							<p:column headerText="Gjuha" style="text-align: left">
+							#{i.language}
+							</p:column>
+							<p:column headerText="Shënime" style="text-align: left">
+							#{i.notes}
+							</p:column>
+								
+
+					</p:dataTable>
+
+
+					</div>
+				</div>
+			</p:panel>
+
+
+		</div>
+	</div>
+
+</ui:composition>

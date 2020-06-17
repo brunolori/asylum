@@ -13,11 +13,14 @@ public class AsylumDecisionSx {
 	String uniqueNo;
 	String name;
 	String surname;
+	Character gender;
+	Integer fromAge;
+	Integer toAge;
 	String orderNo;
 	Integer statusId;
 	Integer stageId;
 	Integer selectionId;
-	Integer transferStatusId;
+	Integer typeId;
 	Date fromDate;
 	Date toDate;
 	

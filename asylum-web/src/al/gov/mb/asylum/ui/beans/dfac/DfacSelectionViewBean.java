@@ -85,6 +85,9 @@ public class DfacSelectionViewBean implements Serializable {
 	HearingDTO hearing;
 	
 	
+	String actualView;
+	
+	
 	
 
 	public NavBean getNav() {
@@ -220,11 +223,16 @@ public class DfacSelectionViewBean implements Serializable {
 	public void setTransfers(List<TransferDTO> transfers) {
 		this.transfers = transfers;
 	}
+
+	public String getActualView() {
+		return actualView;
+	}
+	public void setActualView(String actualView) {
+		this.actualView = actualView;
+	}
 	
 	
 	
-	
-			
 	
 	public void init()
 	{		
@@ -234,6 +242,7 @@ public class DfacSelectionViewBean implements Serializable {
 			Messages.throwFacesMessage("I perzgjedhuri i papercaktuar",3);
 			return;
 		}
+		onMenuSelect("selection_view_feedback_list.xhtml");
 		loadRaport(Integer.valueOf(eventId));	
 		this.edit = false;
 	}
@@ -551,6 +560,13 @@ public class DfacSelectionViewBean implements Serializable {
 			{
 				Messages.throwFacesMessage(e);
 			}
+	}
+	
+	
+	
+	public void onMenuSelect(String view)
+	{
+		this.actualView = view;
 	}
 	
 	

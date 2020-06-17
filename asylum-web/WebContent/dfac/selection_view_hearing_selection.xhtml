@@ -18,7 +18,8 @@
 			
 				<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-12 ui-md-4 bold, ui-g-12 ui-md-8 empty" styleClass="ui-panelgrid-blank">
 					<p:outputLabel value="Data Dëgjimit"/>
-					<p:calendar pattern="dd.MM.yyyy" value="#{dfacSelectionViewBean.hearing.predictedHearingDate}" placeholder="Data Dëgjimit" focusOnSelect="false" />
+					<p:calendar pattern="dd.MM.yyyy" value="#{dfacSelectionViewBean.hearing.predictedHearingDate}" 
+					placeholder="Data Dëgjimit" focusOnSelect="false" />
 					<p:outputLabel value="Shënime"/>
 					<p:inputTextarea value="#{dfacSelectionViewBean.hearing.selectionNotes}" placeholder="Shënime"/>
 									

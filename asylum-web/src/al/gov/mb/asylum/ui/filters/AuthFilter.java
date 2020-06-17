@@ -44,7 +44,7 @@ public class AuthFilter implements Filter
             boolean ajaxRequest = "partial/ajax".equals(req.getHeader("Faces-Request"));
 
             String reqURI = req.getRequestURI();
-            if ( reqURI.equals(loginURL)
+            if ( reqURI.contains(loginURL)
             		|| isValidUserToken(ses)
                     || reqURI.contains("/public/")
                     || reqURI.contains("javax.faces.resource")

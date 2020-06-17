@@ -49,12 +49,12 @@ public class EventDAO {
 		}
 		if(req.getFromDate() != null)
 		{
-			sql += "AND trunc(t.recordDate)>=:from ";
+			sql += "AND trunc(t.eventDate)>=:from ";
 			params.put("from", req.getFromDate());
 		}
 		if(req.getToDate() != null)
 		{
-			sql += "AND trunc(t.recordDate)<=:to ";
+			sql += "AND trunc(t.eventDate)<=:to ";
 			params.put("to", req.getToDate());
 		}
 		
@@ -89,7 +89,7 @@ public class EventDAO {
 	
 	public long getTodayCount()
 	{
-		return (long)em.createQuery("SELECT COUNT(t) FROM IrregularEvent t WHERE t.recordDate>=TRUNC(:today)")
+		return (long)em.createQuery("SELECT COUNT(t) FROM IrregularEvent t WHERE t.eventDate>=TRUNC(:today)")
 				.setParameter("today", Calendar.getInstance().getTime())
 				.getSingleResult();
 	}

@@ -11,6 +11,8 @@ public class AsylumDecisionTypeDTO implements Serializable {
     private String tag;
     private String tagEn;
     private boolean status;
+    
+    
 	public int getId() {
 		return id;
 	}

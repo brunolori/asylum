@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+
+	<div class="ui-g ui-fluid nopad">
+
+
+
+		<div class="ui-g-12 nopad">
+			<p:panel header="TRANSFERIME" styleClass="panelSuccess">
+
+				<div class="ui-g">
+					<div class="ui-g-12">
+						<p:messages showDetail="true" closable="true" />
+					</div>
+
+					<h:panelGroup rendered="#{empty dfacSelectionViewBean.transfers}">
+						<div class="ui-g-12">
+							<h3 style="color: #7f202f; font-weight: bold">Nuk ka
+								Transferime !</h3>
+							<h3>Vendodhja aktuale
+								#{dfacSelectionViewBean.selection.event.organization.tag}</h3>
+						</div>
+					</h:panelGroup>
+					<div class="ui-g-12">
+						<p:dataTable value="#{dfacSelectionViewBean.transfers}" var="t"
+							styleClass="no-border"
+							rendered="#{not empty dfacSelectionViewBean.transfers}"
+							rowIndexVar="r">
+
+							<p:column headerText="#" style="text-align: left">
+										    #{r+1}
+										</p:column>
+							<p:column headerText="Ora" style="text-align: left">
+										    #{formatBean.formatTimestamp(t.checkOutTime)}
+										</p:column>
+							<p:column headerText="Nisur nga" style="text-align: left">
+										    #{t.fromOrganization.tag}
+										</p:column>
+							<p:column headerText="Drejt" style="text-align: left">
+										    #{t.toOrganization.tag}
+										</p:column>
+							<p:column headerText="Ora mbërritjes" style="text-align: left">
+										    #{formatBean.formatTimestamp(t.checkInTime)}
+										</p:column>
+							<p:column headerText="Statusi" style="text-align: left">
+										    #{t.transferStatus.tag}
+										</p:column>
+
+						</p:dataTable>
+					</div>
+				</div>
+			</p:panel>
+		</div>
+
+	</div>
+
+
+</ui:composition>

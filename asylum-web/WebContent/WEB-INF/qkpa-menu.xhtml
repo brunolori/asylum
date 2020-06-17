@@ -12,6 +12,7 @@
                 <div class="layout-menu-container">
                     <h:form id="menuform">                       
                         <pv:menu>
+                               <p:menuitem id="qkpa_check_list" value="Check-List" icon="fa fa-fw fa-list" action="#{menuBean.navigate('check-list','qkpa')}"/>
                         	   <p:menuitem id="qkpa_waiting" value="Në pritje" icon="fa fa-fw fa-dashboard" action="#{menuBean.navigate('home','qkpa')}"/> 
                         	   <p:menuitem id="qkpa_stored" value="Të strehuar" icon="fa fa-fw fa-home" action="#{menuBean.navigate('in_house','qkpa')}"/>  
                         	   <p:menuitem id="qkpa_gone" value="Të larguar" icon="fa fa-fw fa-home" action="#{menuBean.navigate('transfer_gone','qkpa')}"/>  

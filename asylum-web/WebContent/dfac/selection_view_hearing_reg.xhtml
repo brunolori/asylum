@@ -16,10 +16,13 @@
 			
 				<p:panelGrid layout="grid" columns="6" columnClasses="bold,empty,bold,empty,bold,empty" styleClass="ui-panelgrid-blank">
 				
-				<p:outputLabel value="Selektuesi"/>
-				<p:inputText value="#{dfacSelectionViewBean.hearing.selectionUser}" readonly="true"/>
 				<p:outputLabel value="Data Selektimit"/>
-				<p:inputText value="#{formatBean.formatTimestamp(dfacSelectionViewBean.hearing.selectionTime)}" readonly="true"/>
+				<p:inputText value="#{formatBean.formatDate(dfacSelectionViewBean.hearing.predictedHearingDate)}" 
+				style="background: antiquewhite"
+				readonly="true"/>
+				<p:outputLabel value="Përzgjedhësi"/>
+				<p:inputText value="#{dfacSelectionViewBean.hearing.selectionUser}" readonly="true" style="background: antiquewhite"/>
+				
 				<p:outputLabel />
 				<p:outputLabel />
 					

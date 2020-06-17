@@ -66,6 +66,26 @@ public class SelectionAPI {
 		
 	}
 	
+	
+	@RequestMapping(value="/notGoneFromQkpa", method=RequestMethod.POST, produces={"application/json"})
+	public ResponseEntity<?> notGoneFromQkpa(@RequestHeader(value="Authorization") String token)
+	{
+		String uname = tokenService.getUsername(token);
+		
+		
+		List<SelectionDTO> list = new Assembler().selectionListToDto(selectionService.notGoneFromQkpa(uname));
+		
+		if(list == null)
+		{
+			return new ResponseEntity<>("Nuk ka te dhena", HttpStatus.NO_CONTENT);
+		}
+		
+		return new ResponseEntity<>(list,HttpStatus.OK);
+		
+	}
+	
+	
+	
 	@RequestMapping(value="/find/uniqueNo/{uniqueNo}", method=RequestMethod.GET, produces={"application/json"})
 	public ResponseEntity<?> getSelectionByUniqueNo(@RequestHeader(value="Authorization") String token, @PathVariable String uniqueNo)
 	{

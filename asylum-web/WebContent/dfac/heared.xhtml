@@ -78,8 +78,8 @@
                 <p:column headerText="Shteti" sortBy="#{h.selection.person.codeNationality}" style="text-align: left">
                		#{h.selection.person.codeNationality}
                 </p:column> 
-                <p:column headerText="Data Dëgjimit" sortBy="#{h.hearingTime}" style="text-align: left">
-              	    #{formatBean.formatTimestamp(h.hearingTime)} 
+                <p:column headerText="Data Dëgjimit" sortBy="#{h.predictedHearingDate}" style="text-align: left">
+              	    #{formatBean.formatDate(h.predictedHearingDate)} 
                 </p:column>         
 				<p:column headerText="Dëgjuesi" sortBy="#{h.listener}" style="text-align: left">
 					#{h.listener}
@@ -139,8 +139,7 @@
 							<p:inputTextarea value="#{dfacHearedBean.selectedHearing.selectionNotes}" readonly="true"/>
 							
 							
-							<p:outputLabel value="Data Dëgjimit"/>
-							<p:inputText value="#{formatBean.formatDate(dfacHearedBean.selectedHearing.hearingTime)}" readonly="true"/>
+							
 							<p:outputLabel value="Dëgjuesi"/>
 							<p:inputText value="#{dfacHearedBean.selectedHearing.listener}" readonly="true"/>
 							<p:outputLabel value="Përkthyesi"/>

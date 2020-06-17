@@ -11,6 +11,7 @@ import javax.faces.bean.ManagedBean;
 import al.gov.mb.asylum.ui.forms.OfficerSx;
 import al.gov.mb.asylum.ui.models.AsylantStageDTO;
 import al.gov.mb.asylum.ui.models.AsylantStatusDTO;
+import al.gov.mb.asylum.ui.models.AsylumDecisionTypeDTO;
 import al.gov.mb.asylum.ui.models.IrStatusDTO;
 import al.gov.mb.asylum.ui.models.KeyValue;
 import al.gov.mb.asylum.ui.models.OfficerDTO;
@@ -35,6 +36,7 @@ public class CacheBean implements Serializable {
 	
 	List<AsylantStageDTO> asylantStages;
 	List<AsylantStatusDTO> asylantStatuses;
+	List<AsylumDecisionTypeDTO> asylumDecisionTypes;
 	List<PlaceTypeDTO> placeTypes;
 	List<IrStatusDTO> irStatuses;
 	List<KeyValue> civilStatuses;
@@ -63,6 +65,7 @@ public class CacheBean implements Serializable {
 		this.asylantStatuses = new HelperService().listAsylantStatus();
 		this.placeTypes = new HelperService().listPlaceType();
 		this.irStatuses = new HelperService().listIrStatus();
+		this.asylumDecisionTypes = new HelperService().listAsylumDecisionType();
 	}
 	
 	
@@ -117,13 +120,14 @@ public class CacheBean implements Serializable {
 		this.states = states;
 	}
 
-	
-	
-	
-	
-	
-	
-	
+	public List<AsylumDecisionTypeDTO> getAsylumDecisionTypes() {
+		return asylumDecisionTypes;
+	}
+
+	public void setAsylumDecisionTypes(List<AsylumDecisionTypeDTO> asylumDecisionTypes) {
+		this.asylumDecisionTypes = asylumDecisionTypes;
+	}
+
 	public String stateName(String code)
 	{
 		if(!StringUtil.isValid(code)) return "Pa deklaruar";

@@ -18,13 +18,8 @@
 			
 				<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-12 ui-md-4 bold, ui-g-12 ui-md-8 empty" styleClass="ui-panelgrid-blank">
 					<p:outputLabel value="Përshkrimi"/>
-					<p:inputTextarea value="#{dfacSelectionViewBean.feedback.notes}" placeholder="Përshkrimi..."/>
-					<p:outputLabel value="Vlera"/>
-					<p:selectOneMenu value="#{dfacSelectionViewBean.feedback.value}">
-						<f:selectItem itemValue="#{null}" itemLabel="Vlera"/>
-						<f:selectItem itemValue="P" itemLabel="Pozitiv"/>
-						<f:selectItem itemValue="N" itemLabel="Negativ"/>
-					</p:selectOneMenu>
+					<p:inputTextarea value="#{dfacSelectionViewBean.feedback.notes}" placeholder="Përshkrimi..." rows="5"/>
+					
 									
 				</p:panelGrid>
 			

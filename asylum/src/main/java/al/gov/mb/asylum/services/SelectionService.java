@@ -377,6 +377,13 @@ public class SelectionService {
 
 			return crudDAO.findById(Selection.class, eventId);
 	}
+
+	public List<Selection> notGoneFromQkpa(String uname) {
+		
+		selectionDAO.addMissingDetails();
+		
+		return selectionDAO.notGoneFromQkpa();
+	}
 	
 
 }

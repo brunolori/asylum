@@ -15,22 +15,26 @@
 				</p:messages>
 			</div>
 			<div class="ui-g-12">
-			<p:panel header="Detajet Intervistës" >
 				<p:panelGrid layout="grid" columns="4" columnClasses="bold,empty,bold,empty" styleClass="ui-panelgrid-blank">
 					<p:outputLabel value="Data selektimit"/>
-					<p:inputText value="#{formatBean.formatTimestamp(dfacSelectionViewBean.interview.selectionTime)}" readonly="true"/>
+					<p:inputText value="#{formatBean.formatDate(dfacSelectionViewBean.interview.predictedInterviewDate)}" 
+					style="background: antiquewhite"
+					readonly="true"/>
 					<p:outputLabel value="Përzgjedhësi"/>
-					<p:inputText value="#{dfacSelectionViewBean.interview.selectionUser}" readonly="true"/>
+					<p:inputText value="#{dfacSelectionViewBean.interview.selectionUser}" 
+					style="background: antiquewhite"
+					readonly="true"/>
 					<p:outputLabel value="Pëkthyesi"/>
 					<p:inputText value="#{dfacSelectionViewBean.interview.translator}" />
 					<p:outputLabel value="Gjuha"/>
 					<p:inputText value="#{dfacSelectionViewBean.interview.language}" />
 				</p:panelGrid>
+				<div class="ui-g-12">
 				<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-12 ui-md-3 bold,ui-g-12 ui-md-9" styleClass="ui-panelgrid-blank">
 			    	<p:outputLabel value="Shënime"/>
 					<p:inputTextarea value="#{dfacSelectionViewBean.interview.notes}" />
 				</p:panelGrid>
-				</p:panel>
+				</div>
 			</div>			
 			
 			<div class="ui-g-12">

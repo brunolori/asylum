@@ -116,7 +116,7 @@ public class DfacSelectionBean implements Serializable {
 	
 	public void search()
 	{
-		req.setMaxResult(1000);
+		req.setMaxResult(null);
 		this.selections = new SelectionService().searchSelection(req);
 		this.selectedSelection = null;
 	}
@@ -125,7 +125,7 @@ public class DfacSelectionBean implements Serializable {
 	{
 		this.req = new SelectionSx();
 		req.setIrStatusCode(IIrStatus.AZILANT);
-		req.setMaxResult(1000);
+		req.setMaxResult(null);
 		this.selectedSelection = null;
 		this.selections = null;
 	}

@@ -1,0 +1,76 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="qkpa_check_list_form">
+
+		<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+				<p:messages showDetail="true" closable="true">
+				 <p:autoUpdate/>
+				</p:messages>
+				</div>
+				<div class="ui-g-12">
+				<p:dataTable value="#{qkpaCheckListBean.selections}"
+					rendered="#{not empty qkpaCheckListBean.selections}" var="s" styleClass="no-border"
+					rowIndexVar="r" 
+					paginator="true" 
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					    currentPageReportTemplate="(Shfaqur: {startRecord} - {endRecord} nga {totalRecords}, Faqja: {currentPage}/{totalPages})"
+						paginatorAlwaysVisible="false" rows="20"
+						rowsPerPageTemplate="5,10,20,30,50" reflow="true"
+					    rowKey="#{i.id}" 
+					>
+				
+				<f:facet name="header">Te parregullt</f:facet>
+
+				<p:column headerText="#" style="text-align: left">
+                    #{r+1}
+                </p:column>
+				<p:column headerText="Nr Unik" sortBy="#{s.event.uniqurNumber}" style="text-align: left">
+                    #{s.event.uniqurNumber}
+                </p:column>
+                <p:column headerText="Foto" style="text-align: left">
+					<p:graphicImage value="#{photoBean.bioImg}" width="50px">
+					<f:param name="event_id" value="#{s.event.id}"/>
+					</p:graphicImage>
+				</p:column>
+                <p:column headerText="Emri plotë" sortBy="#{s.person.name}" filterBy="#{s.person.name}" filterMatchMode="contains" style="text-align: left">
+                   <p:commandLink value="#{s.person.name} #{s.person.surname}" action="#{qkpaCheckListBean.onSelectionSelect(s)}" update=":main"/>
+                </p:column>
+                <p:column headerText="Dtl" sortBy="#{s.person.dob}" style="text-align: left">
+               		#{formatBean.formatDate(s.person.dob)}
+                </p:column>   
+                <p:column headerText="Gj" sortBy="#{s.person.gender}" style="text-align: left">
+               		#{s.person.gender}
+                </p:column> 
+                <p:column headerText="Shteti" sortBy="#{s.person.codeNationality}" style="text-align: left">
+               		#{cacheBean.stateName(s.person.codeNationality)}
+                </p:column> 
+                <p:column headerText="Data regjistrimit" sortBy="#{s.recordDate}"  style="text-align: left">
+                    #{formatBean.formatTimestamp(s.recordDate)}
+                </p:column>  
+                <p:column headerText="Organizata" sortBy="#{s.event.organization.tag}"  style="text-align: left">
+                    #{s.event.organization.tag}
+                </p:column>
+                <p:column headerText="Veprime" >
+               		<p:commandButton value="Larguar" action="#{qkpaCheckListBean.registerGone(s)}" styleClass="red-btn" update="@form">
+               		    <p:confirm header="Person i larguar" message="Jeni te sigurt?"/>
+               		</p:commandButton>
+                </p:column> 
+                
+
+				</p:dataTable>
+			</div>
+				
+			</div>
+
+	</h:form>
+	
+	
+	
+
+</ui:composition>

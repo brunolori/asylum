@@ -17,7 +17,9 @@
 
 							<p:menuitem id="dfac_selection_list" value="Të përzgjedhurit" icon="fa fa-users" action="#{menuBean.navigate('selection_sx','dfac')}"/>
 							
-								
+							<p:menuitem id="dfac_decision_list" value="Vendimet" icon="fa fa-edit" action="#{menuBean.navigate('decisions','dfac')}"/>	
+							
+							
 							<p:submenu id="dfac_interview" label="Intervista" icon="fa fa-question">
 								<p:menuitem id="dfac_interview_ready" value="Gati për intervistim" icon="fa fa-pause" action="#{menuBean.navigate('interview_selected','dfac')}" />
 								<p:menuitem id="dfac_interview_completed" value="Të intervistuar" icon="fa fa-check-square-o" action="#{menuBean.navigate('interviewed','dfac')}"/>

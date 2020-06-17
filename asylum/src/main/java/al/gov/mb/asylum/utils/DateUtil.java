@@ -96,6 +96,24 @@ public class DateUtil {
 		return null;
 	}
 	
+	public static Date getBirthdate(Integer age)
+	{
+		if(age != null)
+		{
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.MILLISECOND, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.HOUR, 0);
+			cal.add(Calendar.YEAR, -age);
+			
+			return cal.getTime();
+			
+		}
+		
+		return null;
+	}
+	
 	
 	public static Date addDaysToDate(Date date,int days)
 	   {       

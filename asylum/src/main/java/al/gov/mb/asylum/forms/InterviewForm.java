@@ -29,14 +29,7 @@ public class InterviewForm {
 		{
 			throw new ValidationException("Plotesoni Perkthyesin");
 		}
-		if(!StringUtil.isValid(interview.getNotes()))
-		{
-			throw new ValidationException("Plotesoni Shenimet e Intervistes");
-		}
-		if(questions == null || questions.isEmpty())
-		{
-			throw new ValidationException("Plotesoni Pyetjet");
-		}
+	
 		/*
 		int i = 1;
 		for(InterviewQuestionDTO iq : questions)
